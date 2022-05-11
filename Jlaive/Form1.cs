@@ -68,7 +68,7 @@ namespace Jlaive
             output.AppendLine("exit");
             output.Append(Convert.ToBase64String(encrypted));
 
-            File.WriteAllText($"{AppDomain.CurrentDomain.BaseDirectory}\\{Path.GetFileNameWithoutExtension(textBox1.Text)}_bcrypt.bat", output.ToString(), Encoding.ASCII);
+            File.WriteAllText($"{AppDomain.CurrentDomain.BaseDirectory}\\{Path.GetFileNameWithoutExtension(textBox1.Text)}.bat", output.ToString(), Encoding.ASCII);
         }
 
 
