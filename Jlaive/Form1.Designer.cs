@@ -33,7 +33,6 @@
             this.openButton = new System.Windows.Forms.Button();
             this.bypassAMSI = new System.Windows.Forms.CheckBox();
             this.obfuscate = new System.Windows.Forms.CheckBox();
-            this.bypassUAC = new System.Windows.Forms.CheckBox();
             this.antiDebug = new System.Windows.Forms.CheckBox();
             this.buildButton = new System.Windows.Forms.Button();
             this.selfDelete = new System.Windows.Forms.CheckBox();
@@ -87,7 +86,7 @@
             // 
             this.obfuscate.AutoSize = true;
             this.obfuscate.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.obfuscate.Location = new System.Drawing.Point(134, 83);
+            this.obfuscate.Location = new System.Drawing.Point(12, 135);
             this.obfuscate.Margin = new System.Windows.Forms.Padding(2);
             this.obfuscate.Name = "obfuscate";
             this.obfuscate.Size = new System.Drawing.Size(98, 22);
@@ -95,23 +94,11 @@
             this.obfuscate.Text = "Obfuscate";
             this.obfuscate.UseVisualStyleBackColor = true;
             // 
-            // bypassUAC
-            // 
-            this.bypassUAC.AutoSize = true;
-            this.bypassUAC.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bypassUAC.Location = new System.Drawing.Point(12, 112);
-            this.bypassUAC.Margin = new System.Windows.Forms.Padding(2);
-            this.bypassUAC.Name = "bypassUAC";
-            this.bypassUAC.Size = new System.Drawing.Size(114, 22);
-            this.bypassUAC.TabIndex = 5;
-            this.bypassUAC.Text = "Bypass UAC";
-            this.bypassUAC.UseVisualStyleBackColor = true;
-            // 
             // antiDebug
             // 
             this.antiDebug.AutoSize = true;
             this.antiDebug.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.antiDebug.Location = new System.Drawing.Point(12, 139);
+            this.antiDebug.Location = new System.Drawing.Point(12, 109);
             this.antiDebug.Margin = new System.Windows.Forms.Padding(2);
             this.antiDebug.Name = "antiDebug";
             this.antiDebug.Size = new System.Drawing.Size(101, 22);
@@ -134,7 +121,7 @@
             // 
             this.selfDelete.AutoSize = true;
             this.selfDelete.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.selfDelete.Location = new System.Drawing.Point(134, 112);
+            this.selfDelete.Location = new System.Drawing.Point(134, 83);
             this.selfDelete.Margin = new System.Windows.Forms.Padding(2);
             this.selfDelete.Name = "selfDelete";
             this.selfDelete.Size = new System.Drawing.Size(98, 22);
@@ -146,7 +133,7 @@
             // 
             this.hidden.AutoSize = true;
             this.hidden.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hidden.Location = new System.Drawing.Point(134, 139);
+            this.hidden.Location = new System.Drawing.Point(134, 109);
             this.hidden.Margin = new System.Windows.Forms.Padding(2);
             this.hidden.Name = "hidden";
             this.hidden.Size = new System.Drawing.Size(76, 22);
@@ -163,7 +150,6 @@
             this.Controls.Add(this.selfDelete);
             this.Controls.Add(this.buildButton);
             this.Controls.Add(this.antiDebug);
-            this.Controls.Add(this.bypassUAC);
             this.Controls.Add(this.obfuscate);
             this.Controls.Add(this.bypassAMSI);
             this.Controls.Add(this.openButton);
@@ -188,7 +174,6 @@
         private System.Windows.Forms.Button openButton;
         private System.Windows.Forms.CheckBox bypassAMSI;
         private System.Windows.Forms.CheckBox obfuscate;
-        private System.Windows.Forms.CheckBox bypassUAC;
         private System.Windows.Forms.CheckBox antiDebug;
         private System.Windows.Forms.Button buildButton;
         private System.Windows.Forms.CheckBox selfDelete;

