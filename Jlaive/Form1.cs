@@ -76,7 +76,9 @@ namespace Jlaive
             output.AppendLine("exit");
             output.Append(Convert.ToBase64String(encrypted));
 
-            File.WriteAllText(Path.ChangeExtension(path, "bat"), output.ToString(), Encoding.ASCII);
+            string outputpath = Path.ChangeExtension(path, "bat");
+            File.WriteAllText(outputpath, output.ToString(), Encoding.ASCII);
+            MessageBox.Show($"Build successful!\nOutput path: {outputpath}", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
