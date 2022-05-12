@@ -44,9 +44,10 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(9, 9);
+            this.label1.Location = new System.Drawing.Point(7, 7);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(67, 18);
+            this.label1.Size = new System.Drawing.Size(57, 15);
             this.label1.TabIndex = 0;
             this.label1.Text = "File path:";
             // 
@@ -54,17 +55,19 @@
             // 
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(12, 30);
+            this.textBox1.Location = new System.Drawing.Point(10, 24);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(406, 22);
+            this.textBox1.Size = new System.Drawing.Size(326, 20);
             this.textBox1.TabIndex = 1;
             // 
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(424, 30);
+            this.button1.Location = new System.Drawing.Point(339, 24);
+            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(60, 20);
             this.button1.TabIndex = 2;
             this.button1.Text = "...";
             this.button1.UseVisualStyleBackColor = true;
@@ -75,9 +78,10 @@
             this.bypassAMSI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.bypassAMSI.AutoSize = true;
             this.bypassAMSI.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bypassAMSI.Location = new System.Drawing.Point(12, 78);
+            this.bypassAMSI.Location = new System.Drawing.Point(10, 61);
+            this.bypassAMSI.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.bypassAMSI.Name = "bypassAMSI";
-            this.bypassAMSI.Size = new System.Drawing.Size(118, 22);
+            this.bypassAMSI.Size = new System.Drawing.Size(97, 19);
             this.bypassAMSI.TabIndex = 3;
             this.bypassAMSI.Text = "Bypass AMSI";
             this.bypassAMSI.UseVisualStyleBackColor = true;
@@ -87,9 +91,10 @@
             this.obfuscate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.obfuscate.AutoSize = true;
             this.obfuscate.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.obfuscate.Location = new System.Drawing.Point(12, 162);
+            this.obfuscate.Location = new System.Drawing.Point(10, 129);
+            this.obfuscate.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.obfuscate.Name = "obfuscate";
-            this.obfuscate.Size = new System.Drawing.Size(98, 22);
+            this.obfuscate.Size = new System.Drawing.Size(81, 19);
             this.obfuscate.TabIndex = 4;
             this.obfuscate.Text = "Obfuscate";
             this.obfuscate.UseVisualStyleBackColor = true;
@@ -99,9 +104,10 @@
             this.bypassUAC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.bypassUAC.AutoSize = true;
             this.bypassUAC.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bypassUAC.Location = new System.Drawing.Point(12, 106);
+            this.bypassUAC.Location = new System.Drawing.Point(10, 84);
+            this.bypassUAC.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.bypassUAC.Name = "bypassUAC";
-            this.bypassUAC.Size = new System.Drawing.Size(114, 22);
+            this.bypassUAC.Size = new System.Drawing.Size(92, 19);
             this.bypassUAC.TabIndex = 5;
             this.bypassUAC.Text = "Bypass UAC";
             this.bypassUAC.UseVisualStyleBackColor = true;
@@ -111,9 +117,10 @@
             this.antiDebug.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.antiDebug.AutoSize = true;
             this.antiDebug.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.antiDebug.Location = new System.Drawing.Point(12, 134);
+            this.antiDebug.Location = new System.Drawing.Point(10, 106);
+            this.antiDebug.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.antiDebug.Name = "antiDebug";
-            this.antiDebug.Size = new System.Drawing.Size(101, 22);
+            this.antiDebug.Size = new System.Drawing.Size(86, 19);
             this.antiDebug.TabIndex = 6;
             this.antiDebug.Text = "Anti Debug";
             this.antiDebug.UseVisualStyleBackColor = true;
@@ -122,9 +129,10 @@
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(12, 242);
+            this.button2.Location = new System.Drawing.Point(10, 194);
+            this.button2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(487, 47);
+            this.button2.Size = new System.Drawing.Size(390, 38);
             this.button2.TabIndex = 7;
             this.button2.Text = "Build";
             this.button2.UseVisualStyleBackColor = true;
@@ -135,18 +143,19 @@
             this.selfDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.selfDelete.AutoSize = true;
             this.selfDelete.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.selfDelete.Location = new System.Drawing.Point(12, 190);
+            this.selfDelete.Location = new System.Drawing.Point(10, 151);
+            this.selfDelete.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.selfDelete.Name = "selfDelete";
-            this.selfDelete.Size = new System.Drawing.Size(98, 22);
+            this.selfDelete.Size = new System.Drawing.Size(84, 19);
             this.selfDelete.TabIndex = 8;
             this.selfDelete.Text = "Self delete";
             this.selfDelete.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(514, 301);
+            this.ClientSize = new System.Drawing.Size(411, 241);
             this.Controls.Add(this.selfDelete);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.antiDebug);
@@ -157,6 +166,7 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.ShowIcon = false;
