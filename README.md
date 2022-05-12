@@ -11,5 +11,9 @@ Join the Discord server for discussion and enquiries: https://discord.gg/RU5RjSe
 ![image](https://media.discordapp.net/attachments/959762900443070485/973935543543033856/unknown.png)
 ![image](https://media.discordapp.net/attachments/959762900443070485/973935592670908456/unknown.png)
 
+## Known issues
+
+`Assembly.GetEntryAssembly()` returns null. Use `Assembly.GetExecutingAssembly()` instead.
+
 ## Disclaimer
 This project was made for educational purposes only. I am not responsible if you choose to use this illegally/maliciously.
