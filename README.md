@@ -13,7 +13,8 @@ Join the Discord server for discussion and enquiries: https://discord.gg/RU5RjSe
 
 ## Known issues
 
-`Assembly.GetEntryAssembly()` returns null. Use `Assembly.GetExecutingAssembly()` instead.
+- `Assembly.GetEntryAssembly()` returns null. Use `Assembly.GetExecutingAssembly()` instead.
+- `Hidden` option does not work on Windows Terminal.
 
 ## Disclaimer
 This project was made for educational purposes only. I am not responsible if you choose to use this illegally/maliciously.
