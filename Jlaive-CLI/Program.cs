@@ -36,13 +36,6 @@ namespace Jlaive
                 else if (args[i] == "-h" || args[i] == "--hidden") _hidden = true;
             }
 
-            if (!File.Exists(_output))
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Invalid output path.");
-                Console.ResetColor();
-                Environment.Exit(1);
-            }
             if (!File.Exists(_input))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
