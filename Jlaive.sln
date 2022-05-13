@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jlaive", "Jlaive\Jlaive.csproj", "{5B32D80E-2D3C-4725-B962-5398452C144D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jlaive-CLI", "Jlaive-CLI\Jlaive-CLI.csproj", "{514EFAA3-CA30-4204-89CF-604B19F9829D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{5B32D80E-2D3C-4725-B962-5398452C144D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B32D80E-2D3C-4725-B962-5398452C144D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B32D80E-2D3C-4725-B962-5398452C144D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{514EFAA3-CA30-4204-89CF-604B19F9829D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{514EFAA3-CA30-4204-89CF-604B19F9829D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{514EFAA3-CA30-4204-89CF-604B19F9829D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{514EFAA3-CA30-4204-89CF-604B19F9829D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
