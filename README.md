@@ -15,6 +15,7 @@ Join the Discord server for discussion and enquiries: https://discord.gg/RU5RjSe
 ## Known issues
 
 - `Assembly.GetEntryAssembly()` returns null. Use `Assembly.GetExecutingAssembly()` instead.
+- `Process.GetCurrentProcess().MainModule.FileName` returns a file name with the wrong extension. Use `Path.ChangeExtension(Process.GetCurrentProcess().MainModule.FileName, null)` instead.
 - `Hidden` option does not work on Windows Terminal.
 
 ## Disclaimer
