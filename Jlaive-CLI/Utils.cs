@@ -3,20 +3,22 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using System.Security.Cryptography;
 
 namespace Jlaive
 {
     public class Utils
     {
-        public static byte[] XORCrypt(byte[] input, string key)
+        public static byte[] Encrypt(byte[] input, byte[] key, byte[] iv)
         {
-            byte[] keyc = Encoding.UTF8.GetBytes(key);
-            for (int i = 0; i < input.Length; i++)
-            {
-                input[i] = (byte)(input[i] ^ keyc[i % keyc.Length]);
-            }
-            return input;
+            AesManaged aes = new AesManaged();
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.PKCS7;
+            ICryptoTransform encryptor = aes.CreateEncryptor(key, iv);
+            byte[] encrypted = encryptor.TransformFinalBlock(input, 0, input.Length);
+            encryptor.Dispose();
+            aes.Dispose();
+            return encrypted;
         }
 
         public static string RandomString(int length, Random rng)

