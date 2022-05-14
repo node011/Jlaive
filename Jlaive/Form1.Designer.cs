@@ -73,6 +73,8 @@
             // bypassAMSI
             // 
             this.bypassAMSI.AutoSize = true;
+            this.bypassAMSI.Checked = true;
+            this.bypassAMSI.CheckState = System.Windows.Forms.CheckState.Checked;
             this.bypassAMSI.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bypassAMSI.Location = new System.Drawing.Point(12, 83);
             this.bypassAMSI.Margin = new System.Windows.Forms.Padding(2);
