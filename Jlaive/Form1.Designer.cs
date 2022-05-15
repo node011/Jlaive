@@ -37,6 +37,7 @@
             this.buildButton = new System.Windows.Forms.Button();
             this.selfDelete = new System.Windows.Forms.CheckBox();
             this.hidden = new System.Windows.Forms.CheckBox();
+            this.startup = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -143,11 +144,24 @@
             this.hidden.Text = "Hidden";
             this.hidden.UseVisualStyleBackColor = true;
             // 
+            // startup
+            // 
+            this.startup.AutoSize = true;
+            this.startup.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.startup.Location = new System.Drawing.Point(134, 135);
+            this.startup.Margin = new System.Windows.Forms.Padding(2);
+            this.startup.Name = "startup";
+            this.startup.Size = new System.Drawing.Size(77, 22);
+            this.startup.TabIndex = 10;
+            this.startup.Text = "Startup";
+            this.startup.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(514, 249);
+            this.Controls.Add(this.startup);
             this.Controls.Add(this.hidden);
             this.Controls.Add(this.selfDelete);
             this.Controls.Add(this.buildButton);
@@ -180,5 +194,6 @@
         private System.Windows.Forms.Button buildButton;
         private System.Windows.Forms.CheckBox selfDelete;
         private System.Windows.Forms.CheckBox hidden;
+        private System.Windows.Forms.CheckBox startup;
     }
 }

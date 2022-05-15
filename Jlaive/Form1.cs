@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace Jlaive
@@ -31,7 +32,8 @@ namespace Jlaive
             if (obfuscate.Checked) arguments += "--obfuscate ";
             if (selfDelete.Checked) arguments += "--deleteself ";
             if (hidden.Checked) arguments += "--hidden ";
-            Process.Start("cmd.exe", "/c jlaivecli " + arguments.Trim() + " & timeout /t 3 /nobreak >nul").WaitForExit();
+            if (startup.Checked) arguments += "--startup ";
+            Process.Start("cmd.exe", "/c jlaivecli.exe " + arguments.Trim() + " & timeout /t 3 /nobreak >nul").WaitForExit();
             buildButton.Enabled = true;
         }
     }
