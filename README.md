@@ -6,6 +6,14 @@ Support for native applications will come soon.
 
 Join the Discord server for discussion and enquiries: https://discord.gg/RU5RjSe8WN.
 
+## Features
+- AES encryption
+- Compression
+- AMSI bypass
+- Anti Debug
+- Obfuscation
+- Melt file (self delete)
+
 ## Screenshots
 ![image](https://media.discordapp.net/attachments/959762900443070485/975231315412656138/unknown.png)
 ![image](https://media.discordapp.net/attachments/959762900443070485/974469247021506590/unknown.png)
