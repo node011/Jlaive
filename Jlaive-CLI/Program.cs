@@ -30,30 +30,14 @@ namespace Jlaive
             {
                 switch (args[i])
                 {
-                    case string p when (p == "-o" || p == "--output"):
-                        _output = args[i + 1];
-                        break;
-                    case string p when (p == "-i" || p == "--input"):
-                        _input = args[i + 1];
-                        break;
-                    case string p when (p == "-ab" || p == "--amsibypass"):
-                        _amsibypass = true;
-                        break;
-                    case string p when (p == "-ad" || p == "--antidebug"):
-                        _antidebug = true;
-                        break;
-                    case string p when (p == "-obf" || p == "--obfuscate"):
-                        _obfuscate = true;
-                        break;
-                    case string p when (p == "-d" || p == "--deleteself"):
-                        _deleteself = true;
-                        break;
-                    case string p when (p == "-h" || p == "--hidden"):
-                        _hidden = true;
-                        break;
-                    case string p when (p == "-s" || p == "--startup"):
-                        _startup = true;
-                        break;
+                    case string p when (p == "-o" || p == "--output"): _output = args[i + 1]; break;
+                    case string p when (p == "-i" || p == "--input"): _input = args[i + 1]; break;
+                    case string p when (p == "-ab" || p == "--amsibypass"): _amsibypass = true; break;
+                    case string p when (p == "-ad" || p == "--antidebug"): _antidebug = true; break;
+                    case string p when (p == "-obf" || p == "--obfuscate"): _obfuscate = true; break;
+                    case string p when (p == "-d" || p == "--deleteself"): _deleteself = true; break;
+                    case string p when (p == "-h" || p == "--hidden"): _hidden = true; break;
+                    case string p when (p == "-s" || p == "--startup"): _startup = true; break;
                 }
             }
 
