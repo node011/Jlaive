@@ -37,7 +37,6 @@ namespace Jlaive
                     case string p when (p == "-obf" || p == "--obfuscate"): _obfuscate = true; break;
                     case string p when (p == "-d" || p == "--deleteself"): _deleteself = true; break;
                     case string p when (p == "-h" || p == "--hidden"): _hidden = true; break;
-                    case string p when (p == "-s" || p == "--startup"): _startup = true; break;
                 }
             }
 
@@ -68,7 +67,7 @@ namespace Jlaive
             byte[] payload_enc = Encrypt(Compress(pbytes), aes.Key, aes.IV);
 
             Console.WriteLine("Creating stub...");
-            string stub = StubGen.CreateCS(aes.Key, aes.IV, _amsibypass, _antidebug, _startup, rng);
+            string stub = StubGen.CreateCS(aes.Key, aes.IV, _amsibypass, _antidebug, rng);
             aes.Dispose();
 
             Console.WriteLine("Compiling stub...");
