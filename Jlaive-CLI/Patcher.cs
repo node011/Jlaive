@@ -23,7 +23,6 @@ namespace Jlaive
                     IList<Instruction> instr = method.Body.Instructions;
                     for (var i = 0; i < instr.Count; i++)
                     {
-                        Console.WriteLine(instr[i]);
                         if (instr[i].OpCode == OpCodes.Callvirt && instr[i].ToString().Contains("System.Diagnostics.ProcessModule::get_FileName()"))
                         {
                             instr.Insert(i + 1, OpCodes.Ldnull.ToInstruction());
