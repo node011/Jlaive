@@ -32,7 +32,6 @@ namespace Jlaive
             if (obfuscate.Checked) arguments += "--obfuscate ";
             if (selfDelete.Checked) arguments += "--deleteself ";
             if (hidden.Checked) arguments += "--hidden ";
-            if (startup.Checked) arguments += "--startup ";
             Process.Start("cmd.exe", "/c jlaivecli.exe " + arguments.Trim() + " & timeout /t 3 /nobreak >nul").WaitForExit();
             buildButton.Enabled = true;
         }
