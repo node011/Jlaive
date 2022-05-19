@@ -22,8 +22,6 @@ Join the Discord server for discussion and enquiries: https://discord.gg/RU5RjSe
 
 ## Known issues
 
-- `Assembly.GetEntryAssembly()` returns null. Use `Assembly.GetExecutingAssembly()` instead.
-- Getting the current file name will return a file name with the .exe file extension at the end.
 - `Hidden` option does not work on Windows Terminal.
 
 ## Disclaimer
