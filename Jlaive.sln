@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.1.32210.238
+VisualStudioVersion = 17.2.32516.85
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jlaive", "Jlaive\Jlaive.csproj", "{5B32D80E-2D3C-4725-B962-5398452C144D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jlaive-CLI", "Jlaive-CLI\Jlaive-CLI.csproj", "{514EFAA3-CA30-4204-89CF-604B19F9829D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jlaive", "Jlaive\Jlaive.csproj", "{D6BBA820-E9F7-4DA3-A7D2-90A73871C0DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,19 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5B32D80E-2D3C-4725-B962-5398452C144D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5B32D80E-2D3C-4725-B962-5398452C144D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5B32D80E-2D3C-4725-B962-5398452C144D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5B32D80E-2D3C-4725-B962-5398452C144D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{514EFAA3-CA30-4204-89CF-604B19F9829D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{514EFAA3-CA30-4204-89CF-604B19F9829D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{514EFAA3-CA30-4204-89CF-604B19F9829D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{514EFAA3-CA30-4204-89CF-604B19F9829D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6BBA820-E9F7-4DA3-A7D2-90A73871C0DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6BBA820-E9F7-4DA3-A7D2-90A73871C0DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6BBA820-E9F7-4DA3-A7D2-90A73871C0DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6BBA820-E9F7-4DA3-A7D2-90A73871C0DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7E36CD8D-1FA5-47A7-941D-6EF9B103931E}
+		SolutionGuid = {C6803204-4415-411E-8D02-0D633E212A8A}
 	EndGlobalSection
 EndGlobal
