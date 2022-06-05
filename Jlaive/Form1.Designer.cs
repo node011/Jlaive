@@ -78,7 +78,7 @@
             this.textBox1.Location = new System.Drawing.Point(12, 35);
             this.textBox1.Margin = new System.Windows.Forms.Padding(2);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(469, 22);
+            this.textBox1.Size = new System.Drawing.Size(469, 20);
             this.textBox1.TabIndex = 1;
             // 
             // openButton
@@ -172,6 +172,7 @@
             this.tabControl1.Controls.Add(this.encryptionPage);
             this.tabControl1.Controls.Add(this.binderPage);
             this.tabControl1.Controls.Add(this.outputPage);
+            this.tabControl1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControl1.Location = new System.Drawing.Point(12, 65);
             this.tabControl1.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl1.Name = "tabControl1";
@@ -394,7 +395,7 @@
             this.Name = "Form1";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Jlaive Premium";
+            this.Text = "Jlaive";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tabControl1.ResumeLayout(false);
