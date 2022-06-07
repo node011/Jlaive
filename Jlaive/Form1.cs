@@ -49,7 +49,7 @@ namespace Jlaive
                 xorEncryption.Checked = obj.xor;
                 listBox1.Items.AddRange(obj.bindedFiles);
             }
-            Task.Factory.StartNew(CheckVersion);
+            Task.Factory.StartNew(CheckVersion); // Comment out this line to disable version checking
             UpdateKeys(sender, e);
         }
 
