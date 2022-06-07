@@ -209,12 +209,7 @@ namespace Jlaive
                 WebClient wc = new WebClient();
                 string latestversion = wc.DownloadString("https://raw.githubusercontent.com/ch2sh/Jlaive/main/version").Trim();
                 wc.Dispose();
-                if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\bin\\latestversion"))
-                {
-                    File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "\\bin\\latestversion", latestversion);
-                    return;
-                }
-                else
+                if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\bin\\latestversion"))
                 {
                     string currentversion = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "\\bin\\latestversion").Trim();
                     if (currentversion != latestversion)
@@ -225,8 +220,8 @@ namespace Jlaive
                             Process.Start("https://github.com/ch2sh/Jlaive/releases/tag/" + latestversion);
                         }
                     }
-                    return;
                 }
+                File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "\\bin\\latestversion", latestversion);
             }
             catch { }
         }
