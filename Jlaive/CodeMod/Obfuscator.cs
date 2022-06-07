@@ -38,14 +38,11 @@ namespace Jlaive
                         sc += c;
                         continue;
                     }
-                    if (!invar)
+                    if (!invar && sc.Length >= amount)
                     {
-                        if (sc.Length >= amount)
-                        {
-                            splitted.Add(sc);
-                            invar = false;
-                            sc = string.Empty;
-                        }
+                        splitted.Add(sc);
+                        invar = false;
+                        sc = string.Empty;
                     }
                     sc += c;
                 }
@@ -109,14 +106,11 @@ namespace Jlaive
                         sc += c;
                         continue;
                     }
-                    if (!invar)
+                    if (!invar && sc.Length >= amount)
                     {
-                        if (sc.Length >= amount)
-                        {
-                            splitted.Add(sc);
-                            invar = false;
-                            sc = string.Empty;
-                        }
+                        splitted.Add(sc);
+                        invar = false;
+                        sc = string.Empty;
                     }
                     if (c == '\'')
                     {
