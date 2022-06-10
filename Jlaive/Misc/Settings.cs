@@ -6,7 +6,7 @@ namespace Jlaive
 {
     public class Settings
     {
-        private static string savepath = AppDomain.CurrentDomain.BaseDirectory + "\\settings.json";
+        private static string savepath = AppDomain.CurrentDomain.BaseDirectory + "\\bin\\settings.json";
 
         public static SettingsObject Load()
         {

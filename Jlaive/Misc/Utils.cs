@@ -7,6 +7,12 @@ using System.Security.Cryptography;
 
 namespace Jlaive
 {
+    public enum EncryptionMode
+    {
+        AES,
+        XOR
+    }
+
     public class Utils
     {
         public static byte[] GetEmbeddedResource(string name)
@@ -21,27 +27,31 @@ namespace Jlaive
             return ret;
         }
 
-        public static byte[] Encrypt(byte[] input, byte[] key, byte[] iv, bool xor)
+        public static byte[] Encrypt(EncryptionMode type, byte[] input, byte[] key, byte[] iv)
         {
-            if (xor)
+            switch (type)
             {
-                for (int i = 0; i < input.Length; i++)
-                {
-                    input[i] = (byte)(input[i] ^ key[i % key.Length]);
-                }
-                return input;
+                case EncryptionMode.AES:
+                    {
+                        AesManaged aes = new AesManaged();
+                        aes.Mode = CipherMode.CBC;
+                        aes.Padding = PaddingMode.PKCS7;
+                        ICryptoTransform encryptor = aes.CreateEncryptor(key, iv);
+                        byte[] encrypted = encryptor.TransformFinalBlock(input, 0, input.Length);
+                        encryptor.Dispose();
+                        aes.Dispose();
+                        return encrypted;
+                    }
+                case EncryptionMode.XOR:
+                    {
+                        for (int i = 0; i < input.Length; i++)
+                        {
+                            input[i] = (byte)(input[i] ^ key[i % key.Length]);
+                        }
+                        return input;
+                    }
             }
-            else
-            {
-                AesManaged aes = new AesManaged();
-                aes.Mode = CipherMode.CBC;
-                aes.Padding = PaddingMode.PKCS7;
-                ICryptoTransform encryptor = aes.CreateEncryptor(key, iv);
-                byte[] encrypted = encryptor.TransformFinalBlock(input, 0, input.Length);
-                encryptor.Dispose();
-                aes.Dispose();
-                return encrypted;
-            }
+            return null;
         }
 
         public static byte[] Compress(byte[] bytes)
