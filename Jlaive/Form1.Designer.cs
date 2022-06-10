@@ -353,7 +353,7 @@
             this.listBox1.Location = new System.Drawing.Point(2, 4);
             this.listBox1.Margin = new System.Windows.Forms.Padding(2);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(426, 160);
+            this.listBox1.Size = new System.Drawing.Size(426, 173);
             this.listBox1.TabIndex = 0;
             // 
             // outputPage
