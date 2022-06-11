@@ -143,7 +143,7 @@ namespace Jlaive
                     else concat += $"${line[i]}";
                 }
             }
-            ret += "Invoke-Expression(" + concat + ")";
+            ret += "iex (" + concat + ")";
             return ret;
         }
     }
