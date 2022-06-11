@@ -12,6 +12,7 @@ Join the Discord server for discussion and enquiries: https://discord.gg/Qzyq3Dq
 - Anti Debug
 - Anti VM
 - Melt file (self delete)
+- Bind files
 
 ## Screenshots
 
