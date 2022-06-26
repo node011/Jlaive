@@ -7,7 +7,7 @@ Join the Discord server for discussion and enquiries: https://discord.gg/Qzyq3Dq
 ![image](https://media.discordapp.net/attachments/959762900443070485/987900379863846962/Untitled.png)
 
 ## Features
-- .NET/Native support
+- .NET/Native (x64) support
 - AES/XOR encryption
 - Compression
 - AMSI bypass
