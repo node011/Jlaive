@@ -119,9 +119,16 @@ namespace Jlaive
             byte[] _stubkey = Convert.FromBase64String(key2.Text);
             byte[] _stubiv = Convert.FromBase64String(iv6.Text);
             EncryptionMode mode = xorEncryption.Checked ? EncryptionMode.XOR : EncryptionMode.AES;
+
             if (!File.Exists(_input))
             {
                 MessageBox.Show("Invalid input path.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                buildButton.Enabled = true;
+                return;
+            }
+            if (Path.GetExtension(_input) != ".exe")
+            {
+                MessageBox.Show("Invalid input file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 buildButton.Enabled = true;
                 return;
             }
