@@ -21,19 +21,6 @@ namespace Jlaive
             InitializeComponent();
         }
 
-        private void openButton_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.RestoreDirectory = true;
-            if (ofd.ShowDialog() != DialogResult.OK) return;
-            textBox1.Text = ofd.FileName;
-        }
-
-        private void buildButton_Click(object sender, EventArgs e)
-        {
-            Crypt();
-        }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             SettingsObject obj = Settings.Load();
@@ -51,36 +38,6 @@ namespace Jlaive
             }
             Task.Factory.StartNew(CheckVersion); // Comment out this line to disable version checking
             UpdateKeys(sender, e);
-        }
-
-        private void UpdateKeys(object sender, EventArgs e)
-        {
-            AesManaged aes = new AesManaged();
-            key1.Text = Convert.ToBase64String(aes.Key);
-            iv1.Text = Convert.ToBase64String(aes.IV);
-            aes.Dispose();
-            aes = new AesManaged();
-            key2.Text = Convert.ToBase64String(aes.Key);
-            iv6.Text = Convert.ToBase64String(aes.IV);
-            aes.Dispose();
-        }
-
-        private void aesEncryption_CheckedChanged(object sender, EventArgs e)
-        {
-            if (aesEncryption.Checked) xorEncryption.Checked = false;
-        }
-
-        private void xorEncryption_CheckedChanged(object sender, EventArgs e)
-        {
-            if (xorEncryption.Checked) aesEncryption.Checked = false;
-        }
-
-        private void addFile_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.RestoreDirectory = true;
-            if (ofd.ShowDialog() != DialogResult.OK) return;
-            listBox1.Items.Add(ofd.FileName);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -101,7 +58,38 @@ namespace Jlaive
             Environment.Exit(0);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void openButton_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.RestoreDirectory = true;
+            if (ofd.ShowDialog() != DialogResult.OK) return;
+            textBox1.Text = ofd.FileName;
+        }
+
+        private void buildButton_Click(object sender, EventArgs e)
+        {
+            Crypt();
+        }
+
+        private void aesEncryption_CheckedChanged(object sender, EventArgs e)
+        {
+            if (aesEncryption.Checked) xorEncryption.Checked = false;
+        }
+
+        private void xorEncryption_CheckedChanged(object sender, EventArgs e)
+        {
+            if (xorEncryption.Checked) aesEncryption.Checked = false;
+        }
+
+        private void addFile_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.RestoreDirectory = true;
+            if (ofd.ShowDialog() != DialogResult.OK) return;
+            listBox1.Items.Add(ofd.FileName);
+        }
+
+        private void removeFile_Click(object sender, EventArgs e)
         {
             listBox1.Items.Remove(listBox1.SelectedItem);
         }
@@ -231,6 +219,18 @@ namespace Jlaive
                 File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "\\bin\\latestversion", latestversion);
             }
             catch { }
+        }
+
+        private void UpdateKeys(object sender, EventArgs e)
+        {
+            AesManaged aes = new AesManaged();
+            key1.Text = Convert.ToBase64String(aes.Key);
+            iv1.Text = Convert.ToBase64String(aes.IV);
+            aes.Dispose();
+            aes = new AesManaged();
+            key2.Text = Convert.ToBase64String(aes.Key);
+            iv6.Text = Convert.ToBase64String(aes.IV);
+            aes.Dispose();
         }
     }
 }

@@ -334,7 +334,7 @@
             this.removeFile.TabIndex = 2;
             this.removeFile.Text = "Remove file";
             this.removeFile.UseVisualStyleBackColor = true;
-            this.removeFile.Click += new System.EventHandler(this.button1_Click);
+            this.removeFile.Click += new System.EventHandler(this.removeFile_Click);
             // 
             // addFile
             // 
@@ -374,7 +374,7 @@
             this.listBox2.Location = new System.Drawing.Point(3, 3);
             this.listBox2.Margin = new System.Windows.Forms.Padding(2);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(426, 186);
+            this.listBox2.Size = new System.Drawing.Size(426, 199);
             this.listBox2.TabIndex = 4;
             // 
             // Form1
