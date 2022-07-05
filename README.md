@@ -33,11 +33,13 @@ XMR: 47sQ8jVWGtb8iA5zJnnHmfFmu8GwibMs94JbhtutW9HNeYx9UAxWUNNF3NfE79pGm8bCBCFaF3R
 
 ## To-do
 
-- Evade API hooking
 - Remove the use of `Add-Type` for decryption and decompression
 
 ## Credits
+
 C# RunPE: [https://github.com/nettitude/RunPE](https://github.com/nettitude/RunPE)
+
+SharpUnhooker: [https://github.com/GetRektBoy724/SharpUnhooker](https://github.com/GetRektBoy724/SharpUnhooker)
 
 ## Disclaimer
 This project was made for educational purposes only. I am not responsible if you choose to use this illegally/maliciously.
