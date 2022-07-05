@@ -28,6 +28,11 @@ Demo video with [AsyncRat](https://github.com/NYAN-x-CAT/AsyncRAT-C-Sharp) vs Mi
 - `Hidden` option does not work on Windows Terminal.
 - Not compatible with Python EXEs.
 
+## To-do
+
+- Evade API hooking
+- Remove the use of `Add-Type` for decryption and decompression
+
 ## Donate
 XMR: 47sQ8jVWGtb8iA5zJnnHmfFmu8GwibMs94JbhtutW9HNeYx9UAxWUNNF3NfE79pGm8bCBCFaF3R6CQEYADoF5Uv38m25SNt
 
