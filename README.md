@@ -10,11 +10,13 @@ Join the Discord server for discussion and enquiries: https://discord.gg/Qzyq3Dq
 - .NET/Native (x64) support
 - AES/XOR encryption
 - Compression
-- AMSI bypass
 - Anti Debug
 - Anti VM
 - Melt file (self delete)
 - Bind files
+- AMSI bypass
+- ETW bypass
+- API unhooking
 
 ## Screenshots
 
