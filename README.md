@@ -23,6 +23,9 @@ Join the Discord server for discussion and enquiries: https://discord.gg/Qzyq3Dq
 
 Demo video with [AsyncRat](https://github.com/NYAN-x-CAT/AsyncRAT-C-Sharp) vs Microsoft Defender: https://vimeo.com/717794371
 
+## Donate
+XMR: 47sQ8jVWGtb8iA5zJnnHmfFmu8GwibMs94JbhtutW9HNeYx9UAxWUNNF3NfE79pGm8bCBCFaF3R6CQEYADoF5Uv38m25SNt
+
 ## Known issues
 
 - `Hidden` option does not work on Windows Terminal.
@@ -33,8 +36,8 @@ Demo video with [AsyncRat](https://github.com/NYAN-x-CAT/AsyncRAT-C-Sharp) vs Mi
 - Evade API hooking
 - Remove the use of `Add-Type` for decryption and decompression
 
-## Donate
-XMR: 47sQ8jVWGtb8iA5zJnnHmfFmu8GwibMs94JbhtutW9HNeYx9UAxWUNNF3NfE79pGm8bCBCFaF3R6CQEYADoF5Uv38m25SNt
+## Credits
+C# RunPE: [https://github.com/nettitude/RunPE](https://github.com/nettitude/RunPE)
 
 ## Disclaimer
 This project was made for educational purposes only. I am not responsible if you choose to use this illegally/maliciously.
