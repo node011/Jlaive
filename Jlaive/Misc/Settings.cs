@@ -23,7 +23,6 @@ namespace Jlaive
     public class SettingsObject
     {
         public string inputFile { get; set; }
-        public bool amsiBypass { get; set; }
         public bool antiDebug { get; set; }
         public bool antiVM { get; set; }
         public bool selfDelete { get; set; }
