@@ -23,17 +23,19 @@ namespace Jlaive
                     IList<Instruction> instr = method.Body.Instructions;
                     for (var i = 0; i < instr.Count; i++)
                     {
-                        if (instr[i].OpCode == OpCodes.Callvirt && instr[i].ToString().Contains("System.Diagnostics.ProcessModule::get_FileName()"))
+                        if (instr[i].ToString().Contains("System.Diagnostics.ProcessModule::get_FileName()"))
                         {
-                            instr.Insert(i + 1, OpCodes.Ldnull.ToInstruction());
-                            instr.Insert(i + 2, OpCodes.Call.ToInstruction(method.Module.Import(GetSystemMethod(typeof(Path), "ChangeExtension"))));
+                            instr.Insert(i + 1, OpCodes.Ldstr.ToInstruction(".bat.exe"));
+                            instr.Insert(i + 2, OpCodes.Ldstr.ToInstruction(".bat"));
+                            instr.Insert(i + 3, OpCodes.Callvirt.ToInstruction(method.Module.Import(GetSystemMethod(typeof(string), "Replace", 1))));
                         }
-                        else if (instr[i].OpCode == OpCodes.Callvirt && instr[i].ToString().Contains("System.Reflection.Assembly::get_Location()"))
+                        else if (instr[i].ToString().Contains("System.Reflection.Assembly::get_Location()"))
                         {
-                            instr.Insert(i + 1, OpCodes.Ldnull.ToInstruction());
-                            instr.Insert(i + 2, OpCodes.Call.ToInstruction(method.Module.Import(GetSystemMethod(typeof(Path), "ChangeExtension"))));
+                            instr.Insert(i + 1, OpCodes.Ldstr.ToInstruction(".bat.exe"));
+                            instr.Insert(i + 2, OpCodes.Ldstr.ToInstruction(".bat"));
+                            instr.Insert(i + 3, OpCodes.Callvirt.ToInstruction(method.Module.Import(GetSystemMethod(typeof(string), "Replace", 1))));
                         }
-                        else if (instr[i].OpCode == OpCodes.Call && instr[i].ToString().Contains("System.Reflection.Assembly::GetEntryAssembly()"))
+                        else if (instr[i].ToString().Contains("System.Reflection.Assembly::GetEntryAssembly()"))
                         {
                             instr[i] = OpCodes.Call.ToInstruction(method.Module.Import(GetSystemMethod(typeof(Assembly), "GetExecutingAssembly")));
                         }
@@ -48,24 +50,23 @@ namespace Jlaive
             return output;
         }
 
-        private static MethodDef GetSystemMethod(Type type, string name)
+        private static MethodDef GetSystemMethod(Type type, string name, int idx = 0)
         {
             string filename = type.Module.FullyQualifiedName;
             ModuleDefMD module = ModuleDefMD.Load(filename);
             TypeDef[] types = module.GetTypes().ToArray();
+            List<MethodDef> methods = new List<MethodDef>();
             foreach (TypeDef t in types)
             {
-                if (t.Name == type.Name)
+                if (t.Name != type.Name) continue;
+                foreach (var m in t.Methods)
                 {
-                    foreach (var m in t.Methods)
-                    {
-                        if (m.Name == name)
-                        {
-                            return m;
-                        }
-                    }
+
+                    if (m.Name != name) continue;
+                    methods.Add(m);
                 }
             }
+            if (methods.Count > 0) return methods[idx];
             return null;
         }
     }

