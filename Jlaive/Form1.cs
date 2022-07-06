@@ -105,6 +105,12 @@ namespace Jlaive
             byte[] _stubkey = Convert.FromBase64String(key2.Text);
             byte[] _stubiv = Convert.FromBase64String(iv6.Text);
             EncryptionMode mode = xorEncryption.Checked ? EncryptionMode.XOR : EncryptionMode.AES;
+            if (mode == EncryptionMode.XOR)
+            {
+                MessageBox.Show("XOR encryption is currently not available due to bugs.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                buildButton.Enabled = true;
+                return;
+            }
 
             if (!File.Exists(_input))
             {
