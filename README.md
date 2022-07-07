@@ -35,6 +35,7 @@ XMR: 47sQ8jVWGtb8iA5zJnnHmfFmu8GwibMs94JbhtutW9HNeYx9UAxWUNNF3NfE79pGm8bCBCFaF3R
 
 ## To-do
 
+- Fix XOR encryption
 - Implement new GUI
 
 ## Credits
