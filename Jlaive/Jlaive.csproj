@@ -225,6 +225,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Resources\AESStub.ps1" />
+    <EmbeddedResource Include="Resources\XORStub.ps1" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

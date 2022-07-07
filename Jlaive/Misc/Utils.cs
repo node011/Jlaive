@@ -27,6 +27,16 @@ namespace Jlaive
             return ret;
         }
 
+        public static string GetEmbeddedString(string name)
+        {
+            Assembly asm = Assembly.GetExecutingAssembly();
+            StreamReader stream = new StreamReader(asm.GetManifestResourceStream(name));
+            string ret = stream.ReadToEnd();
+            stream.Close();
+            stream.Dispose();
+            return ret;
+        }
+
         public static byte[] Encrypt(EncryptionMode type, byte[] input, byte[] key, byte[] iv)
         {
             switch (type)
