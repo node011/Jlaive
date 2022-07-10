@@ -20,7 +20,7 @@ Join the Discord server for discussion and enquiries: https://discord.gg/Qzyq3Dq
 
 ## Screenshots
 
-![image](https://media.discordapp.net/attachments/961905736139554876/982925324071338014/unknown.png)
+![image](https://media.discordapp.net/attachments/959762900443070485/995482940190511174/unknown.png)
 ![image](https://media.discordapp.net/attachments/961905736139554876/982925618377281536/unknown.png)
 
 Demo video with [AsyncRat](https://github.com/NYAN-x-CAT/AsyncRAT-C-Sharp) vs Microsoft Defender: https://vimeo.com/717794371
