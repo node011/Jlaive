@@ -4,8 +4,6 @@ Jlaive is an antivirus evasion tool that can convert executables into undetectab
 
 Join the Discord server for discussion and enquiries: https://discord.gg/Qzyq3Dqn82.
 
-![image](https://media.discordapp.net/attachments/959762900443070485/987900379863846962/Untitled.png)
-
 ## Features
 - .NET/Native (x64) support
 - AES/XOR encryption
@@ -20,7 +18,8 @@ Join the Discord server for discussion and enquiries: https://discord.gg/Qzyq3Dq
 
 ## Screenshots
 
-![image](https://media.discordapp.net/attachments/959762900443070485/995482940190511174/unknown.png)
+![image](https://user-images.githubusercontent.com/70506265/179382267-808c0dd6-cef2-4c6a-bcda-4b34f999e7dd.png)
+![image](https://user-images.githubusercontent.com/70506265/179382264-46ee27b4-95f1-4a91-bf53-197956cdd8c8.png)
 
 Demo video with [AsyncRat](https://github.com/NYAN-x-CAT/AsyncRAT-C-Sharp) vs Microsoft Defender: https://vimeo.com/717794371
 
