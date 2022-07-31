@@ -23,17 +23,26 @@ namespace Jlaive
                     IList<Instruction> instr = method.Body.Instructions;
                     for (var i = 0; i < instr.Count; i++)
                     {
-                        if (instr[i].ToString().Contains("System.Diagnostics.ProcessModule::get_FileName()"))
+                        if (instr[i].ToString().Contains(".bat.exe"))
                         {
                             instr.Insert(i + 1, OpCodes.Ldstr.ToInstruction(".bat.exe"));
                             instr.Insert(i + 2, OpCodes.Ldstr.ToInstruction(".bat"));
                             instr.Insert(i + 3, OpCodes.Callvirt.ToInstruction(method.Module.Import(GetSystemMethod(typeof(string), "Replace", 1))));
+                            i += 3;
+                        }
+                        else if (instr[i].ToString().Contains("System.Diagnostics.ProcessModule::get_FileName()"))
+                        {
+                            instr.Insert(i + 1, OpCodes.Ldstr.ToInstruction(".bat.exe"));
+                            instr.Insert(i + 2, OpCodes.Ldstr.ToInstruction(".bat"));
+                            instr.Insert(i + 3, OpCodes.Callvirt.ToInstruction(method.Module.Import(GetSystemMethod(typeof(string), "Replace", 1))));
+                            i += 3;
                         }
                         else if (instr[i].ToString().Contains("System.Reflection.Assembly::get_Location()"))
                         {
                             instr.Insert(i + 1, OpCodes.Ldstr.ToInstruction(".bat.exe"));
                             instr.Insert(i + 2, OpCodes.Ldstr.ToInstruction(".bat"));
                             instr.Insert(i + 3, OpCodes.Callvirt.ToInstruction(method.Module.Import(GetSystemMethod(typeof(string), "Replace", 1))));
+                            i += 3;
                         }
                         else if (instr[i].ToString().Contains("System.Reflection.Assembly::GetEntryAssembly()"))
                         {
