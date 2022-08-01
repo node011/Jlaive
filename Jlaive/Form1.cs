@@ -177,8 +177,19 @@ namespace Jlaive
             string content = FileGen.CreateBat(_key, _iv, mode, hidden.Checked, selfDelete.Checked, rng);
             content += Convert.ToBase64String(stub_enc);
 
+            SaveFileDialog sfd = new SaveFileDialog()
+            {
+                AddExtension = true,
+                DefaultExt = "bat",
+                Title = "Save File",
+                Filter = "Batch files (*.bat)|*.bat",
+                RestoreDirectory = true,
+                FileName = Path.ChangeExtension(_input, "bat")
+            };
+            sfd.ShowDialog();
+
             listBox2.Items.Add("Writing output...");
-            File.WriteAllText(Path.ChangeExtension(_input, "bat"), content, Encoding.ASCII);
+            File.WriteAllText(sfd.FileName, content, Encoding.ASCII);
 
             MessageBox.Show("Done!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             buildButton.Enabled = true;
