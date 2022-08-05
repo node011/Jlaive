@@ -1,6 +1,6 @@
-# Jlaive
+# Crybat
 
-Jlaive is an antivirus evasion tool that can convert executables to undetectable batch files .NET assemblies are not guaranteed to work.
+Crybat (previously known as Jlaive) is an antivirus evasion tool that can convert executables to undetectable batch files .NET assemblies are not guaranteed to work.
 
 Join the Discord server for discussion and enquiries: https://discord.gg/Qzyq3Dqn82.
 
@@ -17,7 +17,7 @@ Join the Discord server for discussion and enquiries: https://discord.gg/Qzyq3Dq
 
 ## Screenshots
 
-![image](https://user-images.githubusercontent.com/70506265/181526448-7c6db765-f00e-45be-b1fa-c55152e44f90.png)
+![image](https://user-images.githubusercontent.com/70506265/183114841-125531e5-b6aa-4400-a441-cc064fcd31b0.png)
 ![image](https://user-images.githubusercontent.com/70506265/181862365-4f49325b-4986-44a1-8f62-f20c67e9367e.png)
 
 
