@@ -32,7 +32,7 @@ namespace Jlaive
                         sc += c;
                         continue;
                     }
-                    if (c == ' ' && invar)
+                    if ((c == ' ' || c == '\'') && invar)
                     {
                         invar = false;
                         sc += c;
