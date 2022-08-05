@@ -63,8 +63,7 @@ namespace Jlaive
             {
                 ret += setlines[i];
                 int r = rng.Next(0, 2);
-                if (r == 0 || i == setlines.Count - 1) ret += Environment.NewLine;
-                else ret += " & ";
+                ret += Environment.NewLine;
             }
 
             string varcalls = string.Empty;
