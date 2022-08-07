@@ -54,6 +54,7 @@
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.outputPage = new System.Windows.Forms.TabPage();
             this.listBox2 = new System.Windows.Forms.ListBox();
+            this.runas = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.optionsPage.SuspendLayout();
             this.encryptionPage.SuspendLayout();
@@ -167,6 +168,7 @@
             // 
             // optionsPage
             // 
+            this.optionsPage.Controls.Add(this.runas);
             this.optionsPage.Controls.Add(this.hidden);
             this.optionsPage.Controls.Add(this.selfDelete);
             this.optionsPage.Controls.Add(this.antiDebug);
@@ -363,6 +365,18 @@
             this.listBox2.Size = new System.Drawing.Size(532, 242);
             this.listBox2.TabIndex = 4;
             // 
+            // runas
+            // 
+            this.runas.AutoSize = true;
+            this.runas.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.runas.Location = new System.Drawing.Point(4, 108);
+            this.runas.Margin = new System.Windows.Forms.Padding(2);
+            this.runas.Name = "runas";
+            this.runas.Size = new System.Drawing.Size(121, 22);
+            this.runas.TabIndex = 11;
+            this.runas.Text = "Run as admin";
+            this.runas.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
@@ -423,5 +437,6 @@
         private System.Windows.Forms.Button refreshKeys;
         private System.Windows.Forms.Button removeFile;
         private System.Windows.Forms.ListBox listBox2;
+        private System.Windows.Forms.CheckBox runas;
     }
 }

