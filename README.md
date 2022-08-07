@@ -17,7 +17,7 @@ Join the Discord server for discussion and enquiries: https://discord.gg/Qzyq3Dq
 
 ## Screenshots
 
-![image](https://user-images.githubusercontent.com/70506265/183114841-125531e5-b6aa-4400-a441-cc064fcd31b0.png)
+![image](https://user-images.githubusercontent.com/70506265/183271813-18ae7e89-f800-47a8-ab90-8fad9c81a5ee.png)
 ![image](https://user-images.githubusercontent.com/70506265/181862365-4f49325b-4986-44a1-8f62-f20c67e9367e.png)
 
 
