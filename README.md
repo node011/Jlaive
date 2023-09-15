@@ -14,7 +14,7 @@ Join the Discord server for discussion and enquiries: https://discord.gg/Qzyq3Dq
 - Bind files
 - AMSI bypass
 - ETW bypass
-- API Unhoking
+- API Unhooking
 
 ## Screenshots
 
